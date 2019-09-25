@@ -25,19 +25,13 @@ class User(Base):
     email = Column(String, unique=True)
     role = Column(String) # 'user', 'admin', 'guest', etc
 
-    # Вопрос: можно ли таким образом ссылаться на запись (id_user) внутри самой таблицы?
     creator_id_user = Column(Integer, ForeignKey('user.id_user'))
-    creatures = relationship('User') # а так же получать список всех 
+    creatures = relationship('User')
     
-    # Вопрос: как сейчас принято хранить даты?
-    # А то я по старой памяти пытаюсь хранить в TimeStamp
-    creation_date = Column(Integer) 
-
-    was_modified = Column(Boolean)
+    creation_time = Column(String) 
+    modification_time = Column(String)
     is_actual = Column(Boolean)
 
-    # связка со связанными аккаунтами (многие ко многим) через промежуточную таблицу
-    # Вопрос: лучше делать через back_populates или backref?
     shared_accounts = relationship(
         "Shared_Account",
         secondary=shared_acc_user_table,
@@ -45,45 +39,38 @@ class User(Base):
     
     accounts = relationship('Accounts')
 
-
     def __init__ (self, id_user, name='', surname='', telegram='', ):
         pass
-
 
     def __repr__ (self):
         return f'<User: {self.id_user}, {self.telegram}>'
 
 
-
 class Account(Base):
-    __tablename__ = 'Account'
+    __tablename__ = 'account'
 
     id_account = Column(Integer, primary_key=True)
     id_user = Column(Integer, ForeignKey('user.id_user'))
-    id_currency = Column(Integer, ForeignKey('currency.id_currency'))
-    currency = relationship('Currency')
+#    id_currency = Column(Integer, ForeignKey('currency.id_currency'))
+#    currency = relationship('Currency')
 
     name = Column(String)
     decscription = Column(String)
 
-
     def __init__ (self, id_user, name='', surname='', telegram='', ):
         pass
-
 
     def __repr__ (self):
         return f'<Account: {self.id_account}, {self.name}>'
 
 
-
-
 class Shared_Account(Base):
-    __tablename__ = 'Shared_Account'
+    __tablename__ = 'shared_account'
 
     id_shared_acc = Column(Integer, primary_key=True)
     owner_id_user = Column(Integer, ForeignKey('user.id_user'))
-    id_currency = Column(Integer, ForeignKey('currency.id_currency'))
-    currency = relationship('Currency')
+#    id_currency = Column(Integer, ForeignKey('currency.id_currency'))
+#    currency = relationship('Currency')
 
     name = Column(String)
     decscription = Column(String)
@@ -93,32 +80,9 @@ class Shared_Account(Base):
         secondary=shared_acc_user_table,
         back_populates="shared_accounts")
 
-
     def __init__ (self, id_user, name='', surname='', telegram='', ):
         pass
-
 
     def __repr__ (self):
         return f'<Shared_Account: {self.id_account}, {self.name}>'
 
-
-
-class Currency(Base):
-    __tablename__ = 'Currency'
-
-    id_currency = Column(Integer, primary_key=True)
-    short_name = Column(String)
-    name = Column(String)
-
-
-    def __init__ (self, id_user, name='', surname='', telegram='', ):
-        pass
-
-
-    def __repr__ (self):
-        return f'<Currency: {self.id_currency}, {self.name}>'
-
-
-
-engine = create_engine('postgresql+psycopg2://test2:111@localhost:5432/test2')
-Base.metadata.create_all(engine)
