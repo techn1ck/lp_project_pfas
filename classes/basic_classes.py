@@ -1,5 +1,5 @@
 from ._service import *
-
+from .operation_class import operation_tag_table
 
 class Account(Base):
     __tablename__ = 'account'
@@ -44,3 +44,28 @@ class Category(Base):
 
     def __repr__ (self):
         return f'<Category: {self.id}, {self.name}>'
+
+class Tag(Base):
+    __tablename__ = 'tag'
+
+    id = Column(Integer, primary_key=True)
+    id_user = Column(Integer, ForeignKey('user.id'))
+    name = Column(String)
+    decscription = Column(String)
+    operations = relationship(
+        "Operation",
+        secondary=operation_tag_table,
+        back_populates="tags"
+    )
+    creation_time = Column(String)
+    modification_time = Column(String)
+    is_actual = Column(Boolean)
+
+
+
+
+    def __init__ (self):
+        pass
+
+    def __repr__ (self):
+        return f'<Tag: {self.id}, {self.name}>'
