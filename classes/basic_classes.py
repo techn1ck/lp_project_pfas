@@ -50,6 +50,7 @@ class Tag(Base):
 
     id = Column(Integer, primary_key=True)
     id_user = Column(Integer, ForeignKey('user.id'))
+    
     name = Column(String)
     decscription = Column(String)
     operations = relationship(
@@ -57,12 +58,10 @@ class Tag(Base):
         secondary=operation_tag_table,
         back_populates="tags"
     )
+    
     creation_time = Column(String)
     modification_time = Column(String)
     is_actual = Column(Boolean)
-
-
-
 
     def __init__ (self):
         pass

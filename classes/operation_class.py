@@ -21,10 +21,9 @@ class Operation(Base):
         secondary=operation_tag_table,
         back_populates="operations"
     )
-
+    
     creation_type = Column(String) # web, bot, parser, shared
     creator_id_user = Column(Integer, ForeignKey('user.id')) # for shared operations
-
     creation_time = Column(String) 
     modification_time = Column(String)
     is_actual = Column(Boolean)
