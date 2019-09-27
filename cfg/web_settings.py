@@ -1,0 +1,1 @@
+DB_STRING = 'postgresql+psycopg2://test2:111@localhost:5432/test2'
