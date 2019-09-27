@@ -40,7 +40,7 @@ class SharedOperaion(Base):
 
     id = Column(Integer, primary_key=True)
     id_user = Column(Integer, ForeignKey('user.id'))
-    id_shared_acc = Column(Integer, ForeignKey('category.id'))
+    id_shared_acc = Column(Integer, ForeignKey('shared_account.id'))
 
     name = Column(String)
     decscription = Column(String)

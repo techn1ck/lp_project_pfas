@@ -1,6 +1,7 @@
 from ._service import *
 from .operation_class import operation_tag_table
 
+
 class Account(Base):
     __tablename__ = 'account'
 
@@ -44,6 +45,7 @@ class Category(Base):
 
     def __repr__ (self):
         return f'<Category: {self.id}, {self.name}>'
+
 
 class Tag(Base):
     __tablename__ = 'tag'
