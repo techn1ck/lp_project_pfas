@@ -75,7 +75,7 @@ class Tag(Base):
 class Currency(Base):
     __tablename__ = 'currency'
 
-    id = Column(Integer, primary_key=True, unique=True)
+    id = Column(Integer, primary_key=True)
     name = Column(String)
     short_name = Column(String)
     symbol = Column(String(2)) # длина в байтах или в символах? пишут, что зависит от БД
