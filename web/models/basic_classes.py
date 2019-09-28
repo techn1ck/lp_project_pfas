@@ -7,7 +7,8 @@ class Account(Base):
 
     id = Column(Integer, primary_key=True)
     id_user = Column(Integer, ForeignKey('user.id'))
-    id_currency = Column(Integer, ForeignKey('currency.id'), unique=True)
+    id_currency = Column(Integer, ForeignKey('currency.id'))
+    currency = relationship('Currency')
 
     name = Column(String)
     decscription = Column(String)
@@ -70,10 +71,11 @@ class Tag(Base):
     def __repr__ (self):
         return f'<Tag: {self.id}, {self.name}>'
 
+
 class Currency(Base):
     __tablename__ = 'currency'
 
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, unique=True)
     name = Column(String)
     short_name = Column(String)
     symbol = Column(String(2)) # длина в байтах или в символах? пишут, что зависит от БД
@@ -84,13 +86,16 @@ class Currency(Base):
     def __repr__ (self):
         return f'<Currency: {self.id_currency}, {self.name}>'
 
+
 class Currency_Rate(Base):
     __tablename__ = 'currency_rate'
 
     id = Column(Integer, primary_key=True)
+
     id_account = Column(Integer, ForeignKey('account.id'))
-    id_account_currency = Column(Integer, ForeignKey('account.id_currency'))
-    id_default_currency = Column(Integer, ForeignKey('user.default_currency'))
+    id_account_currency = relationship("Account", foreign_keys="Account.id_currency")
+    id_default_currency = relationship("User", foreign_keys="User.id_currency")
+
     rate  = Column(Numeric)
     operation_date = Column(String) # TIMESTAMP?
 

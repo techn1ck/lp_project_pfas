@@ -28,7 +28,9 @@ class User(Base):
     
     accounts = relationship('Account')
     categories = relationship('Category')
-    default_currency = Column(Integer, ForeignKey('currency.id'), unique=True)
+
+    id_currency = Column(Integer, ForeignKey('currency.id'))
+    currency = relationship('Currency')
 
     def __init__ (self):
         pass
