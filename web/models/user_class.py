@@ -17,7 +17,7 @@ class User(Base):
     creator_id_user = Column(Integer, ForeignKey('user.id'))
     creatures = relationship('User')
     
-    creation_time = Column(String) 
+    creation_time = Column(String)
     modification_time = Column(String)
     is_actual = Column(Boolean)
 
@@ -28,6 +28,9 @@ class User(Base):
     
     accounts = relationship('Account')
     categories = relationship('Category')
+
+    id_default_currency = Column(Integer, ForeignKey('currency.id'))
+    currency = relationship('Currency')
 
     def __init__ (self):
         pass

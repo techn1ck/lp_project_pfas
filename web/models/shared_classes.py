@@ -13,8 +13,8 @@ class SharedAccount(Base):
 
     id = Column(Integer, primary_key=True)
     owner_id_user = Column(Integer, ForeignKey('user.id'))
-#    id_currency = Column(Integer, ForeignKey('currency.id_currency'))
-#    currency = relationship('Currency')
+    id_currency = Column(Integer, ForeignKey('currency.id'))
+    currency = relationship('Currency')
 
     name = Column(String)
     decscription = Column(String)
