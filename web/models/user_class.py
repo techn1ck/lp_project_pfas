@@ -29,7 +29,7 @@ class User(Base):
     accounts = relationship('Account')
     categories = relationship('Category')
 
-    id_currency = Column(Integer, ForeignKey('currency.id'))
+    id_default_currency = Column(Integer, ForeignKey('currency.id'))
     currency = relationship('Currency')
 
     def __init__ (self):

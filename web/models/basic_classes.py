@@ -93,9 +93,10 @@ class Currency_Rate(Base):
     id = Column(Integer, primary_key=True)
 
     id_account = Column(Integer, ForeignKey('account.id'))
-    id_account_currency = relationship("Account", foreign_keys="Account.id_currency")
-    id_default_currency = relationship("User", foreign_keys="User.id_currency")
-
+    # id_account_currency = relationship("Account", foreign_keys="Account.id_currency")
+    # id_default_currency = relationship("User", foreign_keys="User.id_currency")
+    id_account_currency = Column(Integer)
+    id_default_currency = Column(Integer)
     rate  = Column(Numeric)
     operation_date = Column(String) # TIMESTAMP?
 
