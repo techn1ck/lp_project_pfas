@@ -11,7 +11,7 @@ class Account(Base):
 #    currency = relationship('Currency')
 
     name = Column(String)
-    decscription = Column(String)
+    description = Column(String)
 
     creation_time = Column(String) 
     modification_time = Column(String)
@@ -22,6 +22,13 @@ class Account(Base):
 
     def __repr__ (self):
         return f'<Account: {self.id}, {self.name}>'
+
+    def get_form_fields(self):
+        return {
+            "id_account" : 1,
+            "name" : 2,
+            "description" : 3,
+        }
 
 
 class Category(Base):

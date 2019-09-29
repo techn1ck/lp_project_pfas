@@ -1,0 +1,22 @@
+<!-- extend from base layout -->
+{% extends "accounts.html" %}
+
+{% block account_form %}
+<h1>Add form</h1>
+<form action="" method="post" name="account_form">
+    {{form.hidden_tag()}}
+    <p>
+        Name:<br>
+        {{form.name()}}<br>
+    </p>
+    <p>
+        Description:<br>
+        {{form.description()}}<br>
+    </p>
+    <p>
+        Currency:<br>
+        {{form.currency()}}<br>
+    </p>
+    <p><input type="submit" value="Add"></p>
+</form>
+{% endblock %}
