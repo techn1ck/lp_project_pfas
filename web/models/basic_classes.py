@@ -7,8 +7,8 @@ class Account(Base):
 
     id = Column(Integer, primary_key=True)
     id_user = Column(Integer, ForeignKey('user.id'))
-#    id_currency = Column(Integer, ForeignKey('currency.id'))
-#    currency = relationship('Currency')
+    id_currency = Column(Integer, ForeignKey('currency.id'))
+    currency = relationship('Currency')
 
     name = Column(String)
     description = Column(String)
@@ -17,19 +17,15 @@ class Account(Base):
     modification_time = Column(String)
     is_actual = Column(Boolean)
 
-    def __init__ (self):
-        pass
+    def __init__ (self, data):
+        self.name = data.name.data
+        self.description = data.description.data
+#        self.id_user = 1
+        self.is_actual = 1
 
     def __repr__ (self):
         return f'<Account: {self.id}, {self.name}>'
-
-    def get_form_fields(self):
-        return {
-            "id_account" : 1,
-            "name" : 2,
-            "description" : 3,
-        }
-
+        
 
 class Category(Base):
     __tablename__ = 'category'
@@ -45,7 +41,6 @@ class Category(Base):
     creation_time = Column(String) 
     modification_time = Column(String)
     is_actual = Column(Boolean)
-
 
     def __init__ (self):
         pass
@@ -77,3 +72,38 @@ class Tag(Base):
 
     def __repr__ (self):
         return f'<Tag: {self.id}, {self.name}>'
+
+
+class Currency(Base):
+    __tablename__ = 'currency'
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String)
+    short_name = Column(String)
+    symbol = Column(String(2)) # длина в байтах или в символах? пишут, что зависит от БД
+
+    def __init__ (self):
+        pass
+
+    def __repr__ (self):
+        return f'<Currency: {self.id_currency}, {self.name}>'
+
+
+class Currency_Rate(Base):
+    __tablename__ = 'currency_rate'
+
+    id = Column(Integer, primary_key=True)
+
+    id_account = Column(Integer, ForeignKey('account.id'))
+    # id_account_currency = relationship("Account", foreign_keys="Account.id_currency")
+    # id_default_currency = relationship("User", foreign_keys="User.id_currency")
+    id_account_currency = Column(Integer)
+    id_default_currency = Column(Integer)
+    rate  = Column(Numeric)
+    operation_date = Column(String) # TIMESTAMP?
+
+    def __init__ (self):
+        pass
+
+    def __repr__ (self):
+        return f'<Currency rate: {currency.name}, {self.value}>'
