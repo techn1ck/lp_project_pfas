@@ -80,8 +80,10 @@ class Currency(Base):
     short_name = Column(String)
     symbol = Column(String(2)) # длина в байтах или в символах? пишут, что зависит от БД
 
-    def __init__ (self):
-        pass
+    def __init__ (self, name, short_name, symbol):
+        self.name = name
+        self.short_name = short_name
+        self.symbol = symbol
 
     def __repr__ (self):
         return f'<Currency: {self.id_currency}, {self.name}>'
