@@ -1,6 +1,6 @@
 from ._service import *
 from .shared_classes import shared_acc_user_table
-
+from werkzeug.security import check_password_hash
 
 class User(Base):
     __tablename__ = 'user'
@@ -10,7 +10,8 @@ class User(Base):
     telegram = Column(String, unique=True)
     name = Column(String)
     surname = Column(String)
-    phone = Column(Integer, unique=True)
+    password_hash = Column(String(128))
+    phone = Column(BigInteger, unique=True)
     email = Column(String, unique=True)
     role = Column(String) # 'user', 'admin', 'guest', etc
 
@@ -32,19 +33,23 @@ class User(Base):
     id_default_currency = Column(Integer, ForeignKey('currency.id'))
     currency = relationship('Currency')
 
-    def __init__ (self, telegram, name, surname, phone, email, role, creator_id_user, creation_time, modification_time, is_actual, id_default_currency):
+    def __init__ (self, telegram, name, surname, password_hash, phone, email, role, creation_time, modification_time, is_actual):
         self.telegram = telegram
         self.name = name
         self.surname = surname
+        self.password_hash = password_hash
         self.phone = phone
         self.email = email
         self.role = role
-        self.creator_id_user = creator_id_user
         self.creation_time = creation_time
         self.modification_time = modification_time
         self.is_actual = is_actual
-        self.id_default_currency = id_default_currency
-
 
     def __repr__ (self):
         return f'<User: {self.id}, {self.telegram}>'
+# import where you call: from werkzeug.security import generate_password_hash, check_password_hash
+    # def set_password(self, password):
+    #     self.password_hash = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.password_hash, password)
