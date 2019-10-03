@@ -3,19 +3,16 @@
 
 {% block account_form %}
 <h1>Add form</h1>
-<form action="" method="post" name="account_form">
-    {{form.hidden_tag()}}
+<form action="/accounts/" method="post">
+    {{ form.hidden_tag() }}
     <p>
-        Name:<br>
-        {{form.name()}}<br>
+        {{ form.name.label }} {{ form.name(size=20) }}
     </p>
     <p>
-        Description:<br>
-        {{form.description()}}<br>
+        {{ form.description.label }} {{ form.description(size=20) }}
     </p>
     <p>
-        Currency:<br>
-        {{form.currency()}}<br>
+        {{ form.currency.label }} {{ form.currency() }}
     </p>
     <p><input type="submit" value="Add"></p>
 </form>

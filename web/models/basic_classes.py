@@ -17,14 +17,21 @@ class Account(Base):
     modification_time = Column(String)
     is_actual = Column(Boolean)
 
-    def __init__ (self, data):
+    def __init__ (self):
+        self.id_user = ID_USER
+        self.is_actual = 1
+        self.creation_time = datetime.now()
+        self.modification_time = None
+
+    def add_from_form(self, data):
         self.name = data.name.data
         self.description = data.description.data
-#        self.id_user = 1
-        self.is_actual = 1
+        self.id_currency = data.currency.data
+        if self.id:
+            self.modification_time = datetime.now()
 
     def __repr__ (self):
-        return f'<Account: {self.id}, {self.name}>'
+        return f'<Account - {self.name} (ID = {self.id})>'
         
 
 class Category(Base):
@@ -82,11 +89,14 @@ class Currency(Base):
     short_name = Column(String)
     symbol = Column(String(2)) # длина в байтах или в символах? пишут, что зависит от БД
 
-    def __init__ (self):
-        pass
+    def __init__ (self, name = '', short_name = '', symbol = ''):
+        self.name = name
+        self.short_name = short_name
+        self.symbol = symbol
+        
 
     def __repr__ (self):
-        return f'<Currency: {self.id_currency}, {self.name}>'
+        return f'<Currency: {self.id}, {self.name}>'
 
 
 class Currency_Rate(Base):
