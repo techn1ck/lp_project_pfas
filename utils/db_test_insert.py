@@ -30,8 +30,7 @@ test_currencies = [
     {"name": "Доллар","short_name": "USD","symbol": "$"},
     {"name": "Евро","short_name": "EUR","symbol": "€"}
 ]
-
-new_user = User(test_user['telegram'], test_user['name'], test_user['surname'], test_user['password_hash'], test_user['phone'], test_user['email'], test_user['role'], test_user['creation_time'], test_user['modification_time'], test_user['is_actual'])
+new_user = User(**test_user)
 session.add(new_user)
 
 session.commit()

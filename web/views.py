@@ -1,6 +1,6 @@
 from werkzeug.security import check_password_hash
-from flask import render_template, flash, redirect, session, url_for, request, g
-from flask_login import current_user, login_user
+from flask import render_template, flash, redirect, url_for
+from flask_login import current_user, login_user, logout_user, login_required
 from sqlalchemy.orm import sessionmaker
 from web.forms import LoginForm
 from web import app
@@ -14,8 +14,9 @@ session = Session()
 
 @app.route('/')
 @app.route('/index')
+#@login_required
 def index():
-    return "Hello World"
+    return render_template('base.html')
 
 @app.route('/login', methods = ['GET', 'POST'])
 def login():
@@ -27,6 +28,11 @@ def login():
         if user is None or not user.check_password(form.password.data):
             flash('Неправильный логин или пароль')
             return redirect(url_for('login'))
-        #login_user(user, remember=form.remember_me.data)
+        login_user(user)
         return redirect(url_for('index'))
     return render_template('login.html', title='Вход', form=form)
+
+@app.route('/logout')
+def logout():
+    logout_user()
+    return redirect(url_for('index'))

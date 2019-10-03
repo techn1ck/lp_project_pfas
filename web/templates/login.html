@@ -1,7 +1,7 @@
 {% extends "base.html" %}
-
-{% block login_form %}
-    <h1>Вход</h1>
+{% block title %}{% endblock %}
+{% block content %}
+<div class="login_form">
     <form action="" method="post" novalidate>
         {{ form.hidden_tag() }}
         <p>
@@ -12,7 +12,8 @@
             {{ form.password.label }}<br>
             {{ form.password(size=32) }}
         </p>
-        <!-- <p> form.remember_me()  form.remember_me.label </p> -->
+
         <p>{{ form.submit() }}</p>
     </form>
+</div>
 {% endblock %}
