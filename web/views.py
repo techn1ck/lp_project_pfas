@@ -24,16 +24,38 @@ def index():
 
 @app.route('/accounts/', methods = ['GET', 'POST'])
 def accounts():
-    form = AccountForm()
-    form.currency.choices = [(str(id_), name) for id_, name in session.query(Currency.id, Currency.name)]
+    id = request.args.get('id', default = 0, type = int)
+    action = request.args.get('action', default = '', type = str)
 
-    data = session.query(Account).all() 
+    flash(id)
+
+    print(request.args)
+
+    a = None
+    if id:
+        a = session.query(Account).filter(Account.id == id).one_or_none()
+
+    if not a:
+        a = Account()
+    elif action == 'delete':
+        session.delete(a)
+        session.commit()
+        a = Account()
+
+    form = AccountForm(obj=a)
+    form.id_currency.choices = [(str(id_), name) for id_, name in session.query(Currency.id, Currency.name)]
 
     if form.validate_on_submit():
-        a = Account()
-        a.add_from_form(form)
+        a.add_form_data(form)
         session.add(a)
         session.commit()
         flash(f"Successfully created a new Account (id='{a.id}', name='{a.name}')")
-        
-    return render_template("account_form.html", title = "Accounts", form=form, data=data)
+
+    to_form = {
+        "title" : "Accounts",
+        "action" : action,
+        "form" : form,
+        "data" : session.query(Account).all(),
+    }
+
+    return render_template("account_form.html", **to_form)

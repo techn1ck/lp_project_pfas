@@ -1,5 +1,5 @@
 from ._service import *
-from .shared_classes import shared_acc_user_table
+from .shared import shared_acc_user_table
 
 
 class User(Base):

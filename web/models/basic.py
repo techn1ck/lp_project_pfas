@@ -1,5 +1,5 @@
 from ._service import *
-from .operation_class import operation_tag_table
+from .operation import operation_tag_table
 
 
 class Account(Base):
@@ -23,10 +23,10 @@ class Account(Base):
         self.creation_time = datetime.now()
         self.modification_time = None
 
-    def add_from_form(self, data):
+    def add_form_data(self, data):
         self.name = data.name.data
         self.description = data.description.data
-        self.id_currency = data.currency.data
+        self.id_currency = data.id_currency.data
         if self.id:
             self.modification_time = datetime.now()
 

@@ -4,6 +4,7 @@ from wtforms.validators import Required
 
 
 class AccountForm(FlaskForm):
+    id = HiddenField('id')
     name = StringField('name', validators = [Required()])
     description = StringField('description')
-    currency = SelectField(u'currency', choices=[])
+    id_currency = SelectField('id_currency')
