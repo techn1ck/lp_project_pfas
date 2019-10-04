@@ -1,12 +1,13 @@
 from ._service import *
 from .shared_classes import shared_acc_user_table
 from werkzeug.security import check_password_hash
+from flask_login import UserMixin
 
-class User(Base):
+class User(Base, UserMixin):
     __tablename__ = 'user'
 
     id = Column(Integer, primary_key=True)
-
+    
     telegram = Column(String, unique=True)
     name = Column(String)
     surname = Column(String)

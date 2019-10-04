@@ -1,0 +1,6 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h2>Привет, {{ current_user.name }}!</h2>
+    <a href="/logout">Выйти</a>
+{% endblock %}

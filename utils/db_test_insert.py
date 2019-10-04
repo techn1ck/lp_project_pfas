@@ -16,7 +16,7 @@ test_user = {
             "telegram": "mytg",
             "name": "Test",
             "surname": "User",
-            "password_hash": generate_password_hash("password"),
+            "password_hash": generate_password_hash("mytg"),
             "phone": "89000000000",
             "email": "first@user.name",
             "role": "admin",
