@@ -1,10 +1,15 @@
 from flask_wtf import FlaskForm
-from wtforms import SelectField, StringField, HiddenField
-from wtforms.validators import Required
-
+from wtforms import TextField, StringField, PasswordField, BooleanField, SubmitField, SelectField, HiddenField
+from wtforms.validators import DataRequired
 
 class AccountForm(FlaskForm):
     id = HiddenField('id')
-    name = StringField('name', validators = [Required()])
-    description = StringField('description')
+    name = StringField('name', validators = [DataRequired()])
+    description = TextField('description')
     id_currency = SelectField('id_currency')
+
+class LoginForm(FlaskForm):
+    telegram = StringField('Логин телеграм', validators = [DataRequired()])
+    password = PasswordField('Пароль', validators = [DataRequired()])
+    remember_me = BooleanField('Запомнить?')
+    submit = SubmitField('Войти')

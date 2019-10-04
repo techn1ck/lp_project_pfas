@@ -2,7 +2,10 @@ import os, sys
 from os.path import dirname, join, abspath
 sys.path.insert(0, abspath(join(dirname(__file__), '..')))
 
-from web.models import *
+from datetime import datetime, date
+from werkzeug.security import generate_password_hash, check_password_hash
+
+from web.models import Base, User, Currency, Currency_Rate, create_engine, sessionmaker
 from cfg import DB_STRING
 
 if __name__ == '__main__':
@@ -12,10 +15,20 @@ if __name__ == '__main__':
     Session = sessionmaker()
     Session.configure(bind=engine)
     session = Session()
-
+    test_user = {
+            "telegram": "mytg",
+            "name": "Test",
+            "surname": "User",
+            "password_hash": generate_password_hash("mytg"),
+            "phone": "89000000000",
+            "email": "first@user.name",
+            "role": "admin",
+            "creation_time": datetime.now(),
+            "modification_time": None,
+            "is_actual": True
+            }
     session.add_all([
-        User(id=1, name='test1', telegram='@test1', phone=12345678, email='test@example.com', ),
-
+        User(**test_user),
         Currency(name='Рубль', short_name='RUB', symbol='₽'),
         Currency(name='Доллар', short_name='USD', symbol='$'),
         Currency(name='Евро', short_name='EUR', symbol='€'),
@@ -24,4 +37,5 @@ if __name__ == '__main__':
 
 
     session.commit()
+    session.close()
 

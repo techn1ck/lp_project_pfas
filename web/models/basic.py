@@ -89,11 +89,10 @@ class Currency(Base):
     short_name = Column(String)
     symbol = Column(String(2)) # длина в байтах или в символах? пишут, что зависит от БД
 
-    def __init__ (self, name = '', short_name = '', symbol = ''):
+    def __init__ (self, name, short_name, symbol):
         self.name = name
         self.short_name = short_name
         self.symbol = symbol
-        
 
     def __repr__ (self):
         return f'<Currency: {self.id}, {self.name}>'
@@ -110,10 +109,13 @@ class Currency_Rate(Base):
     id_account_currency = Column(Integer)
     id_default_currency = Column(Integer)
     rate  = Column(Numeric)
-    operation_date = Column(String) # TIMESTAMP?
+    operation_date = Column(Date)
 
-    def __init__ (self):
-        pass
+    def __init__ (self, id_account_currency, id_default_currency, rate, operation_date):
+        self.id_account_currency = id_account_currency
+        self.id_default_currency = id_default_currency
+        self.rate = rate
+        self.operation_date = operation_date
 
     def __repr__ (self):
-        return f'<Currency rate: {currency.name}, {self.value}>'
+        return f'<Currency rate: {self.id_account_currency}, {self.id_default_currency}>'
