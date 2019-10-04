@@ -7,6 +7,4 @@ from sqlalchemy.ext.declarative import declarative_base
 
 from werkzeug.security import check_password_hash
 
-from web import ID_USER
-
 Base = declarative_base()

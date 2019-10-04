@@ -31,11 +31,11 @@ class User(Base, UserMixin):
     id_default_currency = Column(Integer, ForeignKey('currency.id'))
     currency = relationship('Currency')
 
-    def __init__ (self, telegram, name, surname, password_hash, phone, email, role, creation_time, modification_time=None, is_actual=1):
+    def __init__ (self, telegram, name, surname, password, phone, email, role, creation_time, modification_time=None, is_actual=1):
         self.telegram = telegram
         self.name = name
         self.surname = surname
-        self.password_hash = password_hash
+        self.password = password
         self.phone = phone
         self.email = email
         self.role = role
@@ -47,7 +47,7 @@ class User(Base, UserMixin):
         return f'<User: {self.name} (ID = {self.id}, telegram = {self.telegram})>'
 # import where you call: from werkzeug.security import generate_password_hash, check_password_hash
     # def set_password(self, password):
-    #     self.password_hash = generate_password_hash(password)
+    #     self.password = generate_password_hash(password)
 
     def check_password(self, password):
-        return check_password_hash(self.password_hash, password)
+        return check_password_hash(self.password, password)

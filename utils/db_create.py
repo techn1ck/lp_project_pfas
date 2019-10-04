@@ -19,7 +19,7 @@ if __name__ == '__main__':
             "telegram": "mytg",
             "name": "Test",
             "surname": "User",
-            "password_hash": generate_password_hash("mytg"),
+            "password": generate_password_hash("mytg"),
             "phone": "89000000000",
             "email": "first@user.name",
             "role": "admin",

@@ -18,7 +18,7 @@ class Account(Base):
     is_actual = Column(Boolean)
 
     def __init__ (self):
-        self.id_user = ID_USER
+        self.id_user = id_user
         self.is_actual = 1
         self.creation_time = datetime.now()
         self.modification_time = None

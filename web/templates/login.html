@@ -2,12 +2,12 @@
 {% block title %}{% endblock %}
 {% block content %}
 <div class="login_form">
-        <script async src="https://telegram.org/js/telegram-widget.js?7" data-telegram-login="elementary_chat_bot" data-size="large" data-userpic="false" data-onauth="onTelegramAuth(user)" data-request-access="write"></script>
+       <!-- <script async src="https://telegram.org/js/telegram-widget.js?7" data-telegram-login="elementary_chat_bot" data-size="large" data-userpic="false" data-onauth="onTelegramAuth(user)" data-request-access="write"></script>
         <script type="text/javascript">
           function onTelegramAuth(user) {
             alert('Logged in as ' + user.first_name + ' ' + user.last_name + ' (' + user.id + (user.username ? ', @' + user.username : '') + ')');
           }
-        </script>
+        </script>-->
     
     <form action="" method="post" novalidate>
         {{ form.hidden_tag() }}
