@@ -20,6 +20,7 @@ def index():
     return render_template("index.html")
 
 @app.route('/accounts/', methods = ['GET', 'POST'])
+@login_required
 def accounts():
     id = request.args.get('id', default = 0, type = int)
     action = request.args.get('action', default = '', type = str)

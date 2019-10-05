@@ -1,12 +1,8 @@
-body{
-    padding: 20px;
-}
 .login_form{
-    width: 300px;
-    padding: 10px;
-    margin: 0 auto;
+    display: grid;
+    height: 100vh;
+    place-items: center;
 }
-
-.error{
-    color: red;
+.login_form form{
+    width: 350px;
 }

@@ -2,5 +2,11 @@
 
 {% block content %}
     <h2>Привет, {{ current_user.name }}!</h2>
-    <a href="/logout">Выйти</a>
+    <ul class="nav flex-column">
+        <li class="nav-item"><a href="/accounts" class="nav-link">Добавить счет</a></li>
+        <li class="nav-item"><a href="/account_form" class="nav-link">Ваши счета</a></li>
+        <li class="nav-item"><a href="/logout" class="nav-link">Выйти</a></li>
+    </ul>
+
+
 {% endblock %}
