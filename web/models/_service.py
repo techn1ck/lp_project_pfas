@@ -1,5 +1,5 @@
 from datetime import datetime, date
-from flask_login import UserMixin
+from flask_login import UserMixin, current_user
 
 from sqlalchemy import create_engine, Table, Column, Integer, String, Float, Boolean, Numeric, Date, DateTime, BigInteger, ForeignKey
 from sqlalchemy.orm import sessionmaker, scoped_session, relationship
