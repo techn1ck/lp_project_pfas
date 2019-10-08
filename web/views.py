@@ -24,18 +24,12 @@ def index():
 
 @app.route('/accounts/', methods = ['GET', 'POST'])
 def accounts():
-    id = request.args.get('id', default = 0, type = int)
-    if not id:
-        id = request.form.get('id', default = 0, type = int)
-    action = request.args.get('action', default = '', type = str)
-
-    a = None
-    if id:
-        a = session.query(Account).filter(Account.id == id).one_or_none()
+    id = request.values.get('id', default = 0, type = int)
+    a = session.query(Account).filter(Account.id == id).one_or_none()
 
     if not a:
         a = Account()
-    elif action == 'delete':
+    elif request.args.get('action', default = '', type = str) == 'delete':
         session.delete(a)
         session.commit()
         flash(f"Account was deleted (id='{a.id}', name='{a.name}')")
@@ -59,7 +53,6 @@ def accounts():
     to_form = {
         "title" : "Accounts",
         "id" : id,
-        "action" : action,
         "form" : form,
         "data" : session.query(Account).order_by('id').all(),
     }
