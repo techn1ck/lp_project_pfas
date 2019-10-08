@@ -16,8 +16,7 @@
             {% if current_user.is_authenticated %}
             <ul class="nav navbar-nav">
                 <li><a href="/operations">Операции</a></li>
-                <li><a href="/accounts">Счета</a></li>
-                <li><a href="/shared_accounts">Общие счета</a></li>
+                <li><a href="/shared_accounts">Совместные операции</a></li>
                 <li><a href="/reports">Отчеты</a></li>
             </ul>
             {% endif %}
@@ -26,6 +25,7 @@
                     <li class="dropdown">
                         <a class="dropdown-toggle" data-toggle="dropdown" role="button" href="#">{{ current_user.name }}</a>
                         <ul class="dropdown-menu">
+                            <li><a href="/accounts">Счета</a></li>
                             <li><a href="/categories">Категории</a></li>
                             <li><a href="/tags">Теги</a></li>
                             <li><a href="/settings">Настройки</a></li>

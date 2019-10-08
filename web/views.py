@@ -19,9 +19,12 @@ session = Session()
 def index():
     return render_template("index.html")
 
+
 @login.user_loader
 def load_user(id):
     return session.query(User).get(int(id))
+
+
 @app.route('/login', methods = ['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
@@ -39,10 +42,12 @@ def login():
         return redirect(next_page)
     return render_template('login.html', title='Вход', form=form)
 
+
 @app.route('/logout')
 def logout():
     logout_user()
     return redirect(url_for('index'))
+
 
 @app.route('/accounts/', methods = ['GET', 'POST'])
 @login_required
@@ -82,30 +87,36 @@ def accounts():
 
     return render_template("account_form.html", **to_form)
 
+
 @app.route('/operations')
 @login_required
 def operations():
     return render_template("operations.html")
+
 
 @app.route('/reports')
 @login_required
 def reports():
     return render_template("reports.html")
 
+
 @app.route('/settings')
 @login_required
 def settings():
     return render_template("settings.html")
+
 
 @app.route('/categories')
 @login_required
 def categories():
     return render_template("categories.html")
 
+
 @app.route('/tags')
 @login_required
 def tags():
     return render_template("tags.html")
+
 
 @app.route('/shared_accounts')
 @login_required
