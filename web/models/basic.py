@@ -50,10 +50,20 @@ class Category(Base):
     is_actual = Column(Boolean)
 
     def __init__ (self):
-        pass
+        self.id_user = current_user.get_id()
+        self.is_actual = 1
+        self.creation_time = datetime.now()
+        self.modification_time = None
+
+    def add_form_data(self, data):
+        self.name = data.name.data
+        self.description = data.description.data
+        self.parent_id_cat = data.parent_id_cat.data
+        if self.id:
+            self.modification_time = datetime.now()
 
     def __repr__ (self):
-        return f'<Category: {self.id}, {self.name}>'
+        return f'<Category - {self.name} (ID = {self.id})>'
 
 
 class Tag(Base):

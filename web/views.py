@@ -3,9 +3,9 @@ from werkzeug.urls import url_parse
 from flask import render_template, flash, redirect, url_for, request
 from flask_login import current_user, login_user, logout_user, login_required
 from sqlalchemy.orm import sessionmaker
-from .forms import LoginForm, AccountForm
+from .forms import AccountForm, CategoryForm, LoginForm
 from web import app, login
-from web.models import Account, Currency, User, create_engine
+from web.models import Account, Category, Currency, User, create_engine
 from cfg import DB_STRING
 
 
@@ -37,7 +37,7 @@ def accounts():
         id = 0
 
     form = AccountForm(obj=a)
-    form.id_currency.choices = [(str(id_), name) for id_, name in session.query(Currency.id, Currency.name)]
+    form.id_currency.choices = [(str(i), n) for i, n in session.query(Currency.id, Currency.name)]
 
     if form.validate_on_submit():
         a.add_form_data(form)
@@ -56,8 +56,54 @@ def accounts():
         "form" : form,
         "data" : session.query(Account).order_by('id').all(),
     }
-
     return render_template("account_form.html", **to_form)
+
+
+@app.route('/categories/', methods = ['GET', 'POST'])
+def categories():
+    id = request.values.get('id', default = 0, type = int)
+    c = session.query(Category).filter(Category.id == id).one_or_none()
+
+    if not c:
+        c = Category()
+    elif request.args.get('action', default = '', type = str) == 'delete':
+        session.delete(c)
+        session.commit()
+        flash(f"Category was deleted (id='{c.id}', name='{c.name}')")
+        c = Category()
+        id = 0
+
+    form = CategoryForm(obj=c)
+    form.parent_id_cat.choices = get_categories_tree(c)
+
+    flash(f" {c} ")
+
+
+    if form.validate_on_submit():
+        if form.parent_id_cat.data == "0":
+            form.parent_id_cat.data = None
+        c.add_form_data(form)
+        session.add(c)
+        session.commit()
+        if id:
+            flash(f"Category was updated (id='{c.id}', name='{c.name}')")
+        else:
+            flash(f"Category was created (id='{c.id}', name='{c.name}')")
+            id = c.id
+            form.id.data = c.id
+
+    to_form = {
+        "title" : "Categories",
+        "id" : id,
+        "form" : form,
+        "data" : session.query(Category).order_by('id').all(),
+    }
+    return render_template("category_form.html", **to_form)
+
+
+def get_categories_tree(c):
+    data = [(str(0), 0)]
+    return data
 
 
 @login.user_loader
