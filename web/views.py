@@ -1,6 +1,6 @@
 from werkzeug.security import check_password_hash
 from werkzeug.urls import url_parse
-from flask import render_template, flash, redirect, url_for, request, jsonify
+from flask import render_template, flash, redirect, url_for, request
 from flask_login import current_user, login_user, logout_user, login_required
 from sqlalchemy.orm import sessionmaker
 from .forms import LoginForm, AccountForm
