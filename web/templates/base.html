@@ -9,15 +9,16 @@
 {% endblock %}
 
 
-{% block navbar %} 
+{% block navbar %}
         <nav class="navbar navbar-default">
             <div class="container">
             <a href="/" class="navbar-brand">[ PFAS ]</a>
             {% if current_user.is_authenticated %}
             <ul class="nav navbar-nav">
-                <li><a href="#">Операции</a></li>
+                <li><a href="/operations">Операции</a></li>
                 <li><a href="/accounts">Счета</a></li>
-                <li><a href="#">Отчеты</a></li>
+                <li><a href="/shared_accounts">Общие счета</a></li>
+                <li><a href="/reports">Отчеты</a></li>
             </ul>
             {% endif %}
             <ul class="nav navbar-nav navbar-right">
@@ -25,7 +26,9 @@
                     <li class="dropdown">
                         <a class="dropdown-toggle" data-toggle="dropdown" role="button" href="#">{{ current_user.name }}</a>
                         <ul class="dropdown-menu">
-                            <li><a href="#">Настройки</a></li>
+                            <li><a href="/categories">Категории</a></li>
+                            <li><a href="/tags">Теги</a></li>
+                            <li><a href="/settings">Настройки</a></li>
                             <li role="separator" class="divider"></li>
                             <li><a href="/logout">Выход</a></li>
                         </ul>

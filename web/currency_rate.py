@@ -10,13 +10,7 @@ from urllib3.util.retry import Retry
 from requests.adapters import HTTPAdapter
 
 from web.logs import logger
-from cfg import DB_STRING
-# from web.models import Currency_Rate, create_engine, sessionmaker
 
-# engine = create_engine(DB_STRING, echo=True)
-
-# Session = sessionmaker(bind=engine)
-# session = Session()
 
 def get_currency_rate(currency1="USD", currency2="RUB", date=date.today(), retries=2):
     date = str(date)
@@ -34,14 +28,3 @@ def get_currency_rate(currency1="USD", currency2="RUB", date=date.today(), retri
     except(ValueError, KeyError) as format_error:
         logger.info(f'Ошибка при обработке ответа от сервера: {format_error}')
         raise
-
-def currency_page(session):
-    page_title = "Курсы валют"
-    rates = session.query(Currency_Rate).order_by("operation_date").all()
-    return render_template('currency_rates.html', page_title=page_title, rates=rates)
-
-# new_currency = Currency_Rate(2, 4, 23, date(2018,2,17))
-# session.add(new_currency)
-
-# session.commit()
-# session.close()
