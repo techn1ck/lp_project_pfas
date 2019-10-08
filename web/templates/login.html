@@ -1,36 +1,15 @@
 {% extends "base.html" %}
-{% block title %}{% endblock %}
+{% import 'bootstrap/wtf.html' as wtf %}
+{% block title %}Авторизация{% endblock %}
+
 {% block content %}
-<div class="login_form">
-       <!-- <script async src="https://telegram.org/js/telegram-widget.js?7" data-telegram-login="elementary_chat_bot" data-size="large" data-userpic="false" data-onauth="onTelegramAuth(user)" data-request-access="write"></script>
-        <script type="text/javascript">
-          function onTelegramAuth(user) {
-            alert('Logged in as ' + user.first_name + ' ' + user.last_name + ' (' + user.id + (user.username ? ', @' + user.username : '') + ')');
-          }
-        </script>-->
-    
-    <form action="" method="post" novalidate>
-        {{ form.hidden_tag() }}
-        <p>
-            {{ form.telegram.label }}<br>
-            {{ form.telegram(size=32) }}
-        </p>
-        <p>
-            {{ form.password.label }}<br>
-            {{ form.password(size=32) }}
-        </p>
-        <p>{{ form.remember_me() }} {{ form.remember_me.label }}</p>
-        <p>{{ form.submit() }}</p>
-    </form>
-    <p>Test user = mytg:mytg</p>
-    {% with errors = get_flashed_messages(category_filter=["login_error"]) %}
-    {% if errors %}
-        <div class="error">
-            {%- for msg in errors %}
-                <p>{{ msg }}</p>
-            {% endfor -%}
+    <div class="login_form">
+        <div class="row">
+            <div class="alert alert-danger" role="alert">Test user = mytg:mytg</div>
+            <div class="col-md-4">
+                {{ wtf.quick_form(form) }}
+            </div>
         </div>
-    {% endif %}
-    {% endwith %}
-</div>
+        
+    </div>
 {% endblock %}
