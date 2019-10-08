@@ -86,10 +86,11 @@ def accounts():
         "form" : form,
         "data" : session.query(Account).order_by('id').all(),
     }
-    return render_template("account_form.html", **to_form)
+    return render_template("accounts.html", **to_form)
 
 
 @app.route('/categories/', methods = ['GET', 'POST'])
+#@login_required
 def categories():
     id = request.values.get('id', default = 0, type = int)
     c = session.query(Category).filter(Category.id == id).one_or_none()
@@ -104,14 +105,11 @@ def categories():
         id = 0
 
     form = CategoryForm(obj=c)
-    form.parent_id_cat.choices = get_categories_tree(c)
-
-    flash(f" {c} ")
-
+    form.parent_id.choices = get_categories_tree()
 
     if form.validate_on_submit():
-        if form.parent_id_cat.data == "0":
-            form.parent_id_cat.data = None
+        if form.parent_id.data == "0":
+            form.parent_id.data = None
         c.add_form_data(form)
         session.add(c)
         session.commit()
@@ -128,46 +126,19 @@ def categories():
         "form" : form,
         "data" : session.query(Category).order_by('id').all(),
     }
-    return render_template("category_form.html", **to_form)
+    return render_template("categories.html", **to_form)
 
 
-def get_categories_tree(c):
-    data = [(str(0), 0)]
+def get_categories_tree():
+    data = [(str(0), " - НЕТ - "), ('', '')]
+    for c in session.query(Category).filter(Category.parent_id == None).order_by('id').all():
+        data.append(( str(c.id), f"+ {c.name}" ))
+        if c.children:
+            for child in c.children:
+                data.append(( str(child.id), f"|-- {child.name}" ))
+            data.append(('', ''))
     return data
 
-
-@login.user_loader
-def load_user(id):
-    return session.query(User).get(int(id))
-
-
-@app.route('/login', methods = ['GET', 'POST'])
-def login():
-    if current_user.is_authenticated:
-        return redirect(url_for('index'))
-
-    form = LoginForm()
-
-    if form.validate_on_submit():
-        user = session.query(User).filter_by(telegram=form.telegram.data).first()
-        if user is None or not user.check_password(form.password.data):
-            flash('Неправильный логин/пароль', category='login_error')
-            return redirect(url_for('login'))
-    
-        login_user(user, remember=form.remember_me.data)
-        next_page = request.args.get('next')
-    
-        if not next_page or url_parse(next_page).netloc != '':
-            next_page = url_for('index')
-        return redirect(next_page)
-    
-    return render_template('login.html', title='Вход', form=form)
-
-
-@app.route('/logout')
-def logout():
-    logout_user()
-    return redirect(url_for('index'))
 
 @app.route('/operations')
 @login_required
@@ -185,12 +156,6 @@ def reports():
 @login_required
 def settings():
     return render_template("settings.html")
-
-
-@app.route('/categories')
-@login_required
-def categories():
-    return render_template("categories.html")
 
 
 @app.route('/tags')

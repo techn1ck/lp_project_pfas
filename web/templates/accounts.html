@@ -1,8 +1,13 @@
 <!-- extend from base layout -->
-{% extends "content.html" %}
+{% extends "base.html" %}
 
 
-{% block list %}
+{% block title %}Счета{% endblock %}
+
+
+{% block app_content %}
+<h1>Счета</h1>
+
 {% if data %}
     <table>
         <tr>
@@ -24,11 +29,9 @@
     {% endfor %}
     </table>
 {% endif %}
-{% endblock %}
 
-
-{% block form %}
-<h1>Add form</h1>
+<br />
+<hr />
 <form action="" method="post">
     {{ form.hidden_tag() }}
     <p>
@@ -46,9 +49,9 @@
     <p>
         {{ form.id_currency.label }} {{ form.id_currency() }}
     </p>
-    <p><input type="submit" value="Submit"></p>
-    <p><input type="reset" value="Reset"></p>
+    <p>{{ form.submit() }}</p>
     <p><a href='/accounts/'>New Account</a></p>
 </form>
 <p><a href='/categories/'>Categories</a></p>
+
 {% endblock %}

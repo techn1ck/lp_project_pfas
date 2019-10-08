@@ -8,13 +8,15 @@ class AccountForm(FlaskForm):
     name = StringField('name', validators = [DataRequired()])
     description = TextField('description')
     id_currency = SelectField('id_currency')
+    submit = SubmitField('Submit')
 
 
 class CategoryForm(FlaskForm):
     id = HiddenField('id')
     name = StringField('name', validators = [DataRequired()])
     description = TextField('description')
-    parent_id_cat = SelectField('parent_id_cat')
+    parent_id = SelectField('parent_id')
+    submit = SubmitField('Submit')
 
 
 class LoginForm(FlaskForm):
