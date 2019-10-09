@@ -1,5 +1,37 @@
 {% extends "base.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
 {% block title %}Операции{% endblock %}
+
 {% block app_content %}
 <h1>Операции</h1>
+<div class="col-md-4">
+    {{ wtf.quick_form(form) }}
+</div>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Счет</th>
+            <th>Категория</th>
+            <th>Название</th>
+            <th>Описание</th>
+            <th>Сумма</th>
+            <th>Ред</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{ for operation in operations }}
+            <tr>
+                <th>{{ operation.id }}</th>
+                <td>{{ operation.id_account }}</td>
+                <td>{{ operation.id_cat }}</td>
+                <td>{{ operation.name }}</td>
+                <td>{{ operation.description }}</td>
+                <td>{{ operation.value }}</td>
+                <td><a href="#">Удалить</a></td>
+            </tr>
+        {{ endfor }}
+    </tbody>
+</table>
 {% endblock %}

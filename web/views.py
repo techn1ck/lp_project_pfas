@@ -3,9 +3,9 @@ from werkzeug.urls import url_parse
 from flask import render_template, flash, redirect, url_for, request
 from flask_login import current_user, login_user, logout_user, login_required
 from sqlalchemy.orm import sessionmaker
-from .forms import AccountForm, CategoryForm, LoginForm
+from .forms import AccountForm, CategoryForm, LoginForm, OperationForm
 from web import app, login
-from web.models import Account, Category, Currency, User, create_engine
+from web.models import Account, Category, Currency, User, Operation, create_engine
 from cfg import DB_STRING
 
 
@@ -90,7 +90,7 @@ def accounts():
 
 
 @app.route('/categories/', methods = ['GET', 'POST'])
-#@login_required
+@login_required
 def categories():
     id = request.values.get('id', default = 0, type = int)
     c = session.query(Category).filter(Category.id == id).one_or_none()
@@ -140,10 +140,64 @@ def get_categories_tree():
     return data
 
 
-@app.route('/operations')
+@app.route('/operations/', methods=['GET', 'POST'])
 @login_required
 def operations():
-    return render_template("operations.html")
+    form = OperationForm()
+
+    user_accounts = get_user_accs(current_user.get_id())
+    user_categories = get_user_categories(current_user.get_id())
+    form.account.choices = [] if not user_accounts else user_accounts
+    form.category.choices = [] if not user_categories else user_categories
+    #  присваиваем choises (selectfield) пустой массив, если у пользователя нет счетов\категорий
+
+    if form.validate_on_submit() and request.method == "POST":
+        form_data = {
+            "id_cat": int(form.category.data),
+            "id_account": int(form.account.data),
+            "name": form.name.data,
+            "description": form.description.data,
+            "value": form.value.data,
+        }
+        session.add(Operation(**form_data))
+        session.commit()
+        flash('Операция добавлена')
+        return redirect(url_for('operations'))
+    user_operations = get_user_operations(current_user.get_id())
+    return render_template("operations.html", form=form, operations=user_operations)
+
+
+def get_user_accs(user_id):
+    accounts = []
+    result = session.query(Account).filter(Account.id_user == user_id).all()
+    # нужно переделать запрос, чтобы  он возвращал не весь счет, а только нужные нам данные, добавить проверку is_actual и сортировку (в порядке чего?)
+    if len(result) == 0:  # note len(result) ?
+        return  # если у пользователя нет счетов, возвращаем None
+    for account in result:
+        accounts.append((account.id, account.name))
+    return accounts
+
+
+def get_user_categories(user_id):
+    categories = []
+    result = session.query(Category).filter(Category.id_user == user_id).all()
+    # тоже самое, что и в get_user_accs и сделалать вывод в виде дерева категорий
+    if len(result) == 0:
+        return
+    for category in result:
+        categories.append((category.id, category.name))
+    return categories
+
+
+def get_user_operations(user_id):
+    user_accounts_id = []
+    user_accounts = get_user_accs(user_id)
+    if not user_accounts:
+        return
+    for account in user_accounts:
+        user_accounts_id.append(account[0])
+    operations = session.query(Operation).filter(Operation.id_account.in_(user_accounts_id)).all()
+    return operations
 
 
 @app.route('/reports')

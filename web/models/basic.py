@@ -1,5 +1,5 @@
 from ._service import *
-from .operation import operation_tag_table
+# from .operation import operation_tag_table
 
 
 class Account(Base):
@@ -86,11 +86,11 @@ class Tag(Base):
     
     name = Column(String)
     decscription = Column(String)
-    operations = relationship(
-        "Operation",
-        secondary=operation_tag_table,
-        back_populates="tags"
-    )
+    # operations = relationship(
+    #     "Operation",
+    #     secondary=operation_tag_table,
+    #     back_populates="tags"
+    # )
     
     creation_time = Column(String)
     modification_time = Column(String)

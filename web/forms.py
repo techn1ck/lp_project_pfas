@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import TextField, StringField, PasswordField, BooleanField, SubmitField, SelectField, HiddenField
+from wtforms import TextField, StringField, PasswordField, BooleanField, SubmitField, SelectField, HiddenField, DecimalField
 from wtforms.validators import DataRequired
 
 
@@ -20,7 +20,17 @@ class CategoryForm(FlaskForm):
 
 
 class LoginForm(FlaskForm):
-    telegram = StringField('Логин телеграм', validators = [DataRequired()])
+    telegram = StringField('Логин телеграм', validators = [DataRequired()], default="mytg")
     password = PasswordField('Пароль', validators = [DataRequired()])
     remember_me = BooleanField('Запомнить?')
     submit = SubmitField('Войти')
+
+
+class OperationForm(FlaskForm):
+    category = SelectField('Категория', validators = [DataRequired()], coerce=int)
+    account = SelectField('Счет', validators = [DataRequired()], coerce=int)
+    name = StringField('Название', validators = [DataRequired()])
+    description = TextField('Описание (опционально)')
+    value = DecimalField('Сумма', validators = [DataRequired()])
+    submit = SubmitField('Добавить')
+    # дата операции
