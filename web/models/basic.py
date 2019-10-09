@@ -49,7 +49,7 @@ class Category(Base):
     children = relationship('Category')
 
     name = Column(String)
-    decscription = Column(String)
+    description = Column(String)
 
     creation_time = Column(String) 
     modification_time = Column(String)
@@ -85,7 +85,7 @@ class Tag(Base):
     id_user = Column(Integer, ForeignKey('user.id'))
     
     name = Column(String)
-    decscription = Column(String)
+    description = Column(String)
     operations = relationship(
         "Operation",
         secondary=operation_tag_table,
@@ -96,8 +96,22 @@ class Tag(Base):
     modification_time = Column(String)
     is_actual = Column(Boolean)
 
-    def __init__ (self):
-        pass
+    def __init__ (self, id_user=0, name='', description=''):
+        if id_user:
+            self.id_user = id_user
+        elif current_user:
+            self.id_user = current_user.get_id()
+        self.name = name
+        self.description = description
+        self.is_actual = 1
+        self.creation_time = datetime.now()
+        self.modification_time = None
+
+    def add_form_data(self, data):
+        self.name = data.name.data
+        self.description = data.description.data
+        if self.id:
+            self.modification_time = datetime.now()
 
     def __repr__ (self):
         return f'<Tag: {self.id}, {self.name}>'

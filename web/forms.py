@@ -24,3 +24,10 @@ class LoginForm(FlaskForm):
     password = PasswordField('Пароль', validators = [DataRequired()])
     remember_me = BooleanField('Запомнить?')
     submit = SubmitField('Войти')
+
+
+class TagForm(FlaskForm):
+    id = HiddenField('id')
+    name = StringField('name', validators = [DataRequired()])
+    description = TextField('description')
+    submit = SubmitField('Submit')
