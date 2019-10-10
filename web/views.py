@@ -3,9 +3,9 @@ from werkzeug.urls import url_parse
 from flask import render_template, flash, redirect, url_for, request
 from flask_login import current_user, login_user, logout_user, login_required
 from sqlalchemy.orm import sessionmaker
-from .forms import AccountForm, CategoryForm, LoginForm, OperationForm
+from .forms import AccountForm, CategoryForm, LoginForm, OperationForm, TagForm
 from web import app, login
-from web.models import Account, Category, Currency, User, Operation, create_engine
+from web.models import Account, Category, Currency, User, Operation, Tag, create_engine
 from cfg import DB_STRING
 
 
@@ -27,7 +27,7 @@ def load_user(id):
     return session.query(User).get(int(id))
 
 
-@app.route('/login', methods = ['GET', 'POST'])
+@app.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
         return redirect(url_for('index'))
@@ -51,20 +51,19 @@ def logout():
     return redirect(url_for('index'))
 
 
-@app.route('/accounts/', methods = ['GET', 'POST'])
+@app.route('/accounts/', methods=['GET', 'POST'])
 @login_required
 def accounts():
-    id = request.values.get('id', default = 0, type = int)
+    id = request.values.get('id', default=0, type=int)
     a = session.query(Account).filter(Account.id == id).one_or_none()
 
     if not a:
         a = Account()
-    elif request.args.get('action', default = '', type = str) == 'delete':
+    elif request.args.get('action', default='', type=str) == 'delete':
         session.delete(a)
         session.commit()
         flash(f"Account was deleted (id='{a.id}', name='{a.name}')")
-        a = Account()
-        id = 0
+        return redirect(url_for('accounts'))
 
     form = AccountForm(obj=a)
     form.id_currency.choices = [(str(i), n) for i, n in session.query(Currency.id, Currency.name)]
@@ -77,32 +76,30 @@ def accounts():
             flash(f"Account was updated (id='{a.id}', name='{a.name}')")
         else:
             flash(f"Account was created (id='{a.id}', name='{a.name}')")
-            id = a.id
-            form.id.data = a.id
+        return redirect(url_for('accounts'))
 
     to_form = {
-        "title" : "Accounts",
-        "id" : id,
-        "form" : form,
-        "data" : session.query(Account).order_by('id').all(),
+        "title": "Accounts",
+        "id": id,
+        "form": form,
+        "data": session.query(Account).order_by('id').all(),
     }
     return render_template("accounts.html", **to_form)
 
 
-@app.route('/categories/', methods = ['GET', 'POST'])
+@app.route('/categories/', methods=['GET', 'POST'])
 @login_required
 def categories():
-    id = request.values.get('id', default = 0, type = int)
+    id = request.values.get('id', default=0, type=int)
     c = session.query(Category).filter(Category.id == id).one_or_none()
 
     if not c:
         c = Category()
-    elif request.args.get('action', default = '', type = str) == 'delete':
+    elif request.args.get('action', default='', type=str) == 'delete':
         session.delete(c)
         session.commit()
         flash(f"Category was deleted (id='{c.id}', name='{c.name}')")
-        c = Category()
-        id = 0
+        return redirect(url_for('categories'))
 
     form = CategoryForm(obj=c)
     form.parent_id.choices = get_categories_tree()
@@ -117,14 +114,13 @@ def categories():
             flash(f"Category was updated (id='{c.id}', name='{c.name}')")
         else:
             flash(f"Category was created (id='{c.id}', name='{c.name}')")
-            id = c.id
-            form.id.data = c.id
+        return redirect(url_for('categories'))
 
     to_form = {
-        "title" : "Categories",
-        "id" : id,
-        "form" : form,
-        "data" : session.query(Category).order_by('id').all(),
+        "title": "Categories",
+        "id": id,
+        "form": form,
+        "data": session.query(Category).order_by('id').all(),
     }
     return render_template("categories.html", **to_form)
 
@@ -132,10 +128,10 @@ def categories():
 def get_categories_tree():
     data = [(str(0), " - НЕТ - "), ('', '')]
     for c in session.query(Category).filter(Category.parent_id == None).order_by('id').all():
-        data.append(( str(c.id), f"+ {c.name}" ))
+        data.append((str(c.id), f"+ {c.name}"))
         if c.children:
             for child in c.children:
-                data.append(( str(child.id), f"|-- {child.name}" ))
+                data.append((str(child.id), f"|-- {child.name}"))
             data.append(('', ''))
     return data
 
@@ -212,10 +208,39 @@ def settings():
     return render_template("settings.html")
 
 
-@app.route('/tags')
+@app.route('/tags/', methods=['GET', 'POST'])
 @login_required
 def tags():
-    return render_template("tags.html")
+    id = request.values.get('id', default=0, type=int)
+    t = session.query(Tag).filter(Tag.id == id).one_or_none()
+
+    if not t:
+        t = Tag()
+    elif request.args.get('action', default='', type=str) == 'delete':
+        session.delete(t)
+        session.commit()
+        flash(f"Tag was deleted (id='{t.id}', name='{t.name}')")
+        return redirect(url_for('tags'))
+
+    form = TagForm(obj=t)
+
+    if form.validate_on_submit():
+        t.add_form_data(form)
+        session.add(t)
+        session.commit()
+        if id:
+            flash(f"Tag was updated (id='{t.id}', name='{t.name}')")
+        else:
+            flash(f"Tag was created (id='{t.id}', name='{t.name}')")
+        return redirect(url_for('tags'))
+
+    to_form = {
+        "title": "Tags",
+        "id": id,
+        "form": form,
+        "data": session.query(Tag).order_by('id').all(),
+    }
+    return render_template("tags.html", **to_form)
 
 
 @app.route('/shared_accounts')

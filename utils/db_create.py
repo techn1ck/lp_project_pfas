@@ -5,7 +5,7 @@ sys.path.insert(0, abspath(join(dirname(__file__), '..')))
 from datetime import datetime, date
 from werkzeug.security import generate_password_hash, check_password_hash
 
-from web.models import Account, Category, Base, User, Currency, Currency_Rate, create_engine, sessionmaker, current_user
+from web.models import Account, Category, Base, Tag, User, Currency, Currency_Rate, create_engine, sessionmaker, current_user
 from cfg import DB_STRING
 
 
@@ -86,6 +86,11 @@ if __name__ == '__main__':
         Category(id_user=user1.id, parent_id=cat2.id, name='Одежда'),
         Category(id_user=user1.id, parent_id=cat2.id, name='Коммуналка'),
         Category(id_user=user1.id, parent_id=cat2.id, name='Прочее'),
+
+        Tag(id_user=user1.id, name='Тег 1'),
+        Tag(id_user=user1.id, name='Тег 2'),
+        Tag(id_user=user1.id, name='Тег 3'),
+        Tag(id_user=user1.id, name='Тег 4'),
     ])
     session.commit()
  
