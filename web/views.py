@@ -154,11 +154,10 @@ def operations():
             "name": form.name.data,
             "description": form.description.data,
             "value": form.value.data,
-            "tags": form.tags.data,
         }
         session.add(Operation(**form_data))
         session.commit()
-        flash('Операция добавлена')
+        flash(f'Операция добавлена. Теги: {form.tags.choices}')
         return redirect(url_for('operations'))
     return render_template("operations.html", form=form, operations=user_operations)
 

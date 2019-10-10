@@ -1,8 +1,8 @@
 from ._service import *
 
 operation_tag_table = Table('operation_tag', Base.metadata,
-    Column('id_tag', Integer, ForeignKey('tag.id')),
-    Column('id_operation', Integer, ForeignKey('operation.id'))
+    Column('id_tag', Integer, ForeignKey('tag.id'), primary_key=True),
+    Column('id_operation', Integer, ForeignKey('operation.id'), primary_key=True)
 )
 
 class Operation(Base):
