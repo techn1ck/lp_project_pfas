@@ -1,5 +1,5 @@
 from ._service import *
-# from .operation import operation_tag_table
+from .operation import operation_tag_table
 
 
 class Account(Base):
@@ -147,11 +147,11 @@ class Currency_Rate(Base):
     rate = Column(Numeric)
     operation_date = Column(Date)
 
-    def __init__ (self, id_account_currency, id_default_currency, rate, operation_date):
+    def __init__(self, id_account_currency, id_default_currency, rate, operation_date):
         self.id_account_currency = id_account_currency
         self.id_default_currency = id_default_currency
         self.rate = rate
         self.operation_date = operation_date
 
-    def __repr__ (self):
+    def __repr__(self):
         return f'<Currency rate: {self.id_account_currency}, {self.id_default_currency}>'

@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import TextField, StringField, PasswordField, BooleanField, SubmitField, SelectField, HiddenField, DecimalField
+from wtforms import TextField, StringField, PasswordField, BooleanField, SubmitField, SelectField, HiddenField, DecimalField, SelectMultipleField
 from wtforms.validators import DataRequired
 
 
@@ -29,6 +29,7 @@ class LoginForm(FlaskForm):
 class OperationForm(FlaskForm):
     category = SelectField('Категория', validators=[DataRequired()], coerce=int)
     account = SelectField('Счет', validators=[DataRequired()], coerce=int)
+    tags = SelectMultipleField('Теги', coerce=int)
     name = StringField('Название', validators=[DataRequired()])
     description = TextField('Описание (опционально)')
     value = DecimalField('Сумма', validators=[DataRequired()])

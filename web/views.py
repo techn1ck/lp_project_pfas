@@ -140,12 +140,12 @@ def get_categories_tree():
 @login_required
 def operations():
     form = OperationForm()
+    user_operations = get_user_operations(current_user.get_id())
 
-    user_accounts = get_user_accs(current_user.get_id())
-    user_categories = get_user_categories(current_user.get_id())
-    form.account.choices = [] if not user_accounts else user_accounts
-    form.category.choices = [] if not user_categories else user_categories
-    #  присваиваем choises (selectfield) пустой массив, если у пользователя нет счетов\категорий
+    form.account.choices = get_user_accs(current_user.get_id())
+    form.category.choices = get_user_categories(current_user.get_id())
+    form.tags.choices = get_user_tags(current_user.get_id())
+    #  в choises пустой массив, если у пользователя нет счетов\категорий\тегов
 
     if form.validate_on_submit() and request.method == "POST":
         form_data = {
@@ -154,12 +154,12 @@ def operations():
             "name": form.name.data,
             "description": form.description.data,
             "value": form.value.data,
+            "tags": form.tags.data,
         }
         session.add(Operation(**form_data))
         session.commit()
         flash('Операция добавлена')
         return redirect(url_for('operations'))
-    user_operations = get_user_operations(current_user.get_id())
     return render_template("operations.html", form=form, operations=user_operations)
 
 
@@ -167,8 +167,8 @@ def get_user_accs(user_id):
     accounts = []
     result = session.query(Account).filter(Account.id_user == user_id).all()
     # нужно переделать запрос, чтобы  он возвращал не весь счет, а только нужные нам данные, добавить проверку is_actual и сортировку (в порядке чего?)
-    if len(result) == 0:  # note len(result) ?
-        return  # если у пользователя нет счетов, возвращаем None
+    if len(result) == 0:  # not len(result) ?
+        return accounts  # если у пользователя нет счетов, возвращаем None
     for account in result:
         accounts.append((account.id, account.name))
     return accounts
@@ -179,7 +179,7 @@ def get_user_categories(user_id):
     result = session.query(Category).filter(Category.id_user == user_id).all()
     # тоже самое, что и в get_user_accs и сделалать вывод в виде дерева категорий
     if len(result) == 0:
-        return
+        return categories
     for category in result:
         categories.append((category.id, category.name))
     return categories
@@ -188,13 +188,22 @@ def get_user_categories(user_id):
 def get_user_operations(user_id):
     user_accounts_id = []
     user_accounts = get_user_accs(user_id)
-    if not user_accounts:
+    if len(user_accounts) == 0:
         return
     for account in user_accounts:
         user_accounts_id.append(account[0])
-    operations = session.query(Operation).filter(Operation.id_account.in_(user_accounts_id)).all()
+    operations = session.query(Operation).filter(Operation.id_account.in_(user_accounts_id)).order_by(Operation.creation_time.desc()).all()
     return operations
 
+
+def get_user_tags(user_id):
+    user_tags = []
+    result = session.query(Tag).filter(Tag.id_user == user_id, Tag.is_actual == True).all()
+    if len(result) == 0:  # смотри комментарии get_user_accs
+        return user_tags
+    for tag in result:
+        user_tags.append((tag.id, tag.name))
+    return user_tags
 
 @app.route('/reports')
 @login_required

@@ -1,9 +1,9 @@
 from ._service import *
 
-# operation_tag_table = Table('operation_tag', Base.metadata,
-#     Column('id_tag', Integer, ForeignKey('tag.id')),
-#     Column('id_operation', Integer, ForeignKey('operation.id'))
-# )
+operation_tag_table = Table('operation_tag', Base.metadata,
+    Column('id_tag', Integer, ForeignKey('tag.id')),
+    Column('id_operation', Integer, ForeignKey('operation.id'))
+)
 
 class Operation(Base):
     __tablename__ = 'operation'
@@ -17,11 +17,11 @@ class Operation(Base):
     name = Column(String)
     description = Column(String, default=None)
     value = Column(Numeric)
-    # tags = relationship(
-    #     "Tag",
-    #     secondary=operation_tag_table,
-    #     back_populates="operations"
-    # )
+    tags = relationship(
+        "Tag",
+        secondary=operation_tag_table,
+        back_populates="operations"
+    )
 
     creation_type = Column(String, default="web")  # web, bot, parser, shared
     creator_id_user = Column(Integer, ForeignKey('user.id'), default=None)  # for shared operations
@@ -37,7 +37,6 @@ class Operation(Base):
         self.name = name
         self.description = description
         self.value = value
-        # self.tags = tags
         # self.creation_type = creation_type
         # self.creator_id_user = creator_id_user
         # self.creation_time = creation_time
