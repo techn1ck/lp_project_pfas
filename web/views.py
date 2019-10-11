@@ -4,6 +4,7 @@ from flask import render_template, flash, redirect, url_for, request
 from flask_login import current_user, login_user, logout_user, login_required
 from sqlalchemy.orm import sessionmaker
 from .forms import AccountForm, CategoryForm, LoginForm, TagForm
+from .tree import Tree
 from web import app, login
 from web.models import Account, Category, Currency, Tag, User, create_engine
 from cfg import DB_STRING
@@ -102,7 +103,9 @@ def categories():
         return redirect(url_for('categories'))
 
     form = CategoryForm(obj=c)
-    form.parent_id.choices = get_categories_tree()
+    data = session.query(Category).order_by('id').all()
+    tree = Tree(data)
+    form.parent_id.choices = tree.return_choises()
 
     if form.validate_on_submit():
         if form.parent_id.data == "0":
@@ -120,7 +123,7 @@ def categories():
         "title" : "Categories",
         "id" : id,
         "form" : form,
-        "data" : session.query(Category).order_by('id').all(),
+        "data" : data,
     }
     return render_template("categories.html", **to_form)
 
