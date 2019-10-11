@@ -32,11 +32,16 @@ class Tree():
 
     def draw_tree(self):
         out = ''
-        out += '| ' * (len(self.level)-1)
-        if self.level[-1]:
-            out += '+--'
-        else:
-            out += '|--'
+        l = len(self.level)
+        for i, x in enumerate(self.level):
+            if x and i == l-1: # last child last level
+                out += '+--'
+            elif not x and i == l-1: # not last child last level
+                out += '|--'
+            elif x:
+                out += '. '
+            elif not x:
+                out += '| '
         return out
         
     def last_sibling(self, id, parent_id):
