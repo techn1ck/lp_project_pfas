@@ -140,14 +140,17 @@ def get_categories_tree():
 @login_required
 def operations():
     form = OperationForm()
-    user_operations = get_user_operations(current_user.get_id())
+    user_id = int(current_user.get_id())  # id текущего пользователя
+    tag_table = Tag()
 
-    form.account.choices = get_user_accs(current_user.get_id())
-    form.category.choices = get_user_categories(current_user.get_id())
-    form.tags.choices = get_user_tags(current_user.get_id())
+    user_operations = get_user_operations(user_id) # для вывода текущих операций
+
+    form.account.choices = get_user_accs(user_id)
+    form.category.choices = get_user_categories(user_id)
+    form.tags.choices = get_user_tags(user_id)
     #  в choises пустой массив, если у пользователя нет счетов\категорий\тегов
 
-    if form.validate_on_submit() and request.method == "POST":
+    if form.validate_on_submit() and request.method == "POST": # Добавление операций
         form_data = {
             "id_cat": int(form.category.data),
             "id_account": int(form.account.data),
@@ -155,22 +158,37 @@ def operations():
             "description": form.description.data,
             "value": form.value.data,
         }
-        session.add(Operation(**form_data))
+        _operation = Operation(**form_data)
+        selected_tags = form.tags.data  # в selected_tags список из id выбранных тегов [id1, id2]
+        if len(selected_tags):  # нужно сделать, чтобы туда попадал список вида [(id1, имя),(id2, имя)], пока не понял, как достать имя тега, кроме как подгружать из базы напрямую
+            for tag in selected_tags:
+                tag_object = get_tag_obj(int(tag), user_id)
+                _operation.tags.append(tag_object)
+
+        session.add(_operation)
         session.commit()
-        flash(f'Операция добавлена. Теги: {form.tags.choices}')
+        flash(f'Операция добавлена')
         return redirect(url_for('operations'))
+
+    elif request.method == "GET" and request.args.get('action', default='', type=str) == 'delete': # удаление
+        tag_id = request.values.get('id', default=0, type=int)
+        if tag_id:
+            operation_to_delete = session.query(Operation).filter(Operation.id == tag_id).one_or_none()
+            session.delete(operation_to_delete)
+            session.commit()
+            flash(f'Операция удалена. id {operation_to_delete.id}')
+            return redirect(url_for('operations'))
+    elif request.method == "GET" and request.args.get('action', default='', type=str) == 'update':
+        pass
     return render_template("operations.html", form=form, operations=user_operations)
 
-
+# методы ниже лучше разместить в модели? если да то как из модели делать запросы на получение данных? (ну либо мб просто в отдельный файл вынести)
 def get_user_accs(user_id):
-    accounts = []
     result = session.query(Account).filter(Account.id_user == user_id).all()
     # нужно переделать запрос, чтобы  он возвращал не весь счет, а только нужные нам данные, добавить проверку is_actual и сортировку (в порядке чего?)
     if len(result) == 0:  # not len(result) ?
-        return accounts  # если у пользователя нет счетов, возвращаем None
-    for account in result:
-        accounts.append((account.id, account.name))
-    return accounts
+        return []  # если у пользователя нет счетов, возвращаем пустой список
+    return [(account.id, account.name) for account in result] # переделать остальные функции под такой формат
 
 
 def get_user_categories(user_id):
@@ -203,6 +221,15 @@ def get_user_tags(user_id):
     for tag in result:
         user_tags.append((tag.id, tag.name))
     return user_tags
+
+
+def get_tag_obj(tag_id, user_id):
+    query = session.query(Tag).filter(Tag.id == tag_id, Tag.id_user == user_id).first()
+    if query:
+        return query  # Если тег существует, вернуть его объект
+    else:
+        pass  # Если нет, добавить новый объект и вернуть его
+
 
 @app.route('/reports')
 @login_required
