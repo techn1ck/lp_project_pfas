@@ -22,7 +22,7 @@
             </tr>
         </thead>
         <tbody>
-            {% if operation %}
+            {% if operation is iterable %}
                 {% for operation in operations %}
                     <tr>
                         <th>{{ operation.id }}</th>
