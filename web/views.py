@@ -141,7 +141,7 @@ def get_categories_tree():
 def operations():
     form = OperationForm()
     user_id = int(current_user.get_id())  # id текущего пользователя
-    tag_table = Tag()
+    operation_id = request.values.get('id', default=0, type=int) # id операции (для удаления и редактирования)
 
     user_operations = get_user_operations(user_id) # для вывода текущих операций
 
@@ -171,57 +171,66 @@ def operations():
         return redirect(url_for('operations'))
 
     elif request.method == "GET" and request.args.get('action', default='', type=str) == 'delete': # удаление
-        tag_id = request.values.get('id', default=0, type=int)
-        if tag_id:
-            operation_to_delete = session.query(Operation).filter(Operation.id == tag_id).one_or_none()
+        if operation_id:
+            operation_to_delete = session.query(Operation).filter(Operation.id == operation_id).one_or_none()
+            #  добавить проверку, чтобы юзер не мог удалять чужие операции введя id в get запросе вручную
             session.delete(operation_to_delete)
             session.commit()
             flash(f'Операция удалена. id {operation_to_delete.id}')
             return redirect(url_for('operations'))
     elif request.method == "GET" and request.args.get('action', default='', type=str) == 'update':
-        pass
+        if operation_id:
+            operation_to_edit = session.query(Operation).filter(Operation.id == operation_id).one_or_none()
+            form.account.default = int(operation_to_edit.id_account)
+            form.category.default = int(operation_to_edit.id_cat)
+            #print(get_operation_tags_id(operation_id))
+            pass
+            
     return render_template("operations.html", form=form, operations=user_operations)
 
 
 """
-
-методы ниже оставить здесь, в модели добавить или в отдельный файл?
-Хотел в модели, но почему то подумал, что из модели делать запрос в базу не очень красиво
-
+методы ниже оставить здесь, в модели добавить или просто в отдельный файл?
 """
 
 
 def get_user_accs(id_user):
     result = session.query(Account.id, Account.name).filter(Account.id_user == id_user).all()
-    if len(result):
+    if result:
         return [(account.id, account.name) for account in result]
-    return list  # wtfforms чтобы отрисовать форму требует список, даже если он пустой
+    return []  # wtfforms чтобы отрисовать форму требует список, даже если он пустой
 
 
 def get_user_categories(id_user):  # добавить вывод в виде дерева
     result = session.query(Category.id, Category.name).filter(Category.id_user == id_user).all()
     if result:
         return [(category.id, category.name) for category in result]
-    return list
+    return []
 
 
 def get_user_tags(id_user):
     result = session.query(Tag.id, Tag.name).filter(Tag.id_user == id_user, Tag.is_actual == True).all()
     if result:
         return [(user_tags.id, user_tags.name) for user_tags in result]
-    return list
+    return []
+
+
+def get_operation_tags_id(operation_id):
+    tags_id = []
+    query = session.query(Operation.id, Operation.tags).filter(Operation.id == operation_id).all()
+    pass
 
 
 def get_user_operations(id_user):
     user_accounts = get_user_accs(id_user)
     if not user_accounts:
         return
-    # в user_accounts список [(id, название), (id, название)], нам нужны только id
     user_accounts_id = []  # как это написать в одну строку?
     user_accounts_id = [account[0] for account in user_accounts]
     # В данный момент, вместо названий операций и категорий выводятся теги, возможно ли с помощью sql запроса, сразу выдирать названия или лучше использовать другой способ?
     operations = session.query(Operation).filter(Operation.id_account.in_(user_accounts_id)).order_by(Operation.creation_time.desc()).all()
-    return operations
+    if operations:
+        return operations
 
 
 def get_tag_obj(tag_id, user_id):
