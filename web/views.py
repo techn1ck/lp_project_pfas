@@ -56,7 +56,7 @@ def logout():
 @login_required
 def accounts():
     id = request.values.get('id', default=0, type=int)
-    a = session.query(Account).filter(Account.id == id).one_or_none()
+    a = session.query(Account).filter(Account.id == id and Account.id_user == current_user.get_id()).one_or_none()
 
     if not a:
         a = Account()
@@ -83,7 +83,7 @@ def accounts():
         "title" : "Accounts",
         "id" : id,
         "form" : form,
-        "data" : session.query(Account).order_by('id').all(),
+        "data" : session.query(Account).filter(Account.id_user == current_user.get_id()).order_by('id').all(),
     }
     return render_template("accounts.html", **to_form)
 
@@ -92,7 +92,7 @@ def accounts():
 @login_required
 def categories():
     id = request.values.get('id', default=0, type=int)
-    c = session.query(Category).filter(Category.id == id).one_or_none()
+    c = session.query(Category).filter(Category.id == id and Category.id_user == current_user.get_id()).one_or_none()
 
     if not c:
         c = Category()
@@ -103,7 +103,7 @@ def categories():
         return redirect(url_for('categories'))
 
     form = CategoryForm(obj=c)
-    data = session.query(Category).order_by('id').all()
+    data = session.query(Category).filter(Category.id_user == current_user.get_id()).order_by('id').all()
     tree = Tree(data)
     form.parent_id.choices = tree.return_choises()
 
@@ -128,17 +128,6 @@ def categories():
     return render_template("categories.html", **to_form)
 
 
-def get_categories_tree():
-    data = [(str(0), " - НЕТ - "), ('', '')]
-    for c in session.query(Category).filter(Category.parent_id == None).order_by('id').all():
-        data.append(( str(c.id), f"+ {c.name}" ))
-        if c.children:
-            for child in c.children:
-                data.append(( str(child.id), f"|-- {child.name}" ))
-            data.append(('', ''))
-    return data
-
-
 @app.route('/operations')
 @login_required
 def operations():
@@ -161,7 +150,7 @@ def settings():
 @login_required
 def tags():
     id = request.values.get('id', default=0, type=int)
-    t = session.query(Tag).filter(Tag.id == id).one_or_none()
+    t = session.query(Tag).filter(Tag.id == id and Tag.id_user == current_user.get_id()).one_or_none()
 
     if not t:
         t = Tag()
@@ -187,7 +176,7 @@ def tags():
         "title" : "Tags",
         "id" : id,
         "form" : form,
-        "data" : session.query(Tag).order_by('id').all(),
+        "data" : session.query(Tag).filter(Tag.id_user == current_user.get_id()).order_by('id').all(),
     }
     return render_template("tags.html", **to_form)
 
