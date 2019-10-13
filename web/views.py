@@ -140,57 +140,59 @@ def get_categories_tree():
 @login_required
 def operations():
     form = OperationForm()
-    user_id = int(current_user.get_id())  # id текущего пользователя
-    operation_id = request.values.get('id', default=0, type=int) # id операции (для удаления и редактирования)
+    user_id = current_user.get_id()
+    user_operations = get_user_operations(user_id)  # для вывода текущих операций
+    operation_id = request.values.get('id', default=0, type=int)
 
-    user_operations = get_user_operations(user_id) # для вывода текущих операций
+    if operation_id:
+        current_operation = session.query(Operation).filter(Operation.id == operation_id).one_or_none()
+    else:
+        current_operation = Operation()
 
     form.account.choices = get_user_accs(user_id)
     form.category.choices = get_user_categories(user_id)
     form.tags.choices = get_user_tags(user_id)
-    #  в choises пустой массив, если у пользователя нет счетов\категорий\тегов
+    #  в choises должен быть пустой массив, если у пользователя нет счетов\категорий\тегов, иначе выдает exception
 
-    if form.validate_on_submit() and request.method == "POST": # Добавление операций
-        form_data = {
-            "id_cat": int(form.category.data),
-            "id_account": int(form.account.data),
-            "name": form.name.data,
-            "description": form.description.data,
-            "value": form.value.data,
-        }
-        _operation = Operation(**form_data)
-        selected_tags = form.tags.data  # в selected_tags список из id выбранных тегов [id1, id2]
-        if len(selected_tags):  # нужно сделать, чтобы туда попадал список вида [(id1, имя),(id2, имя)], пока не понял, как достать имя тега, кроме как подгружать из базы напрямую
-            for tag in selected_tags:
-                tag_object = get_tag_obj(int(tag), user_id)
-                _operation.tags.append(tag_object)
-
-        session.add(_operation)
+    if request.method == "GET" and request.args.get('action', default='', type=str) == 'delete':  # удаление
+        session.delete(current_operation)
         session.commit()
-        flash(f'Операция добавлена')
+        # нужно добавить проверку, чтобы юзер не мог удалять чужие операции введя id в get запросе вручную
+        flash(f'Операция удалена. id {current_operation.id}')
         return redirect(url_for('operations'))
 
-    elif request.method == "GET" and request.args.get('action', default='', type=str) == 'delete': # удаление
+    elif request.method == "GET" and request.args.get('action', type=str) == "update":
+        form.id.default = current_operation.id
+        form.account.default = current_operation.id_account
+        form.category.default = current_operation.id_cat
+        form.tags.default = get_operation_tags_id(operation_id)
+        form.name.default = current_operation.name
+        form.description.default = current_operation.description
+        form.value.default = current_operation.value
+        form.process()
+
+    elif form.validate_on_submit() and request.method == "POST":  # Отправка формы
+        tags_objects_list = get_tags_objects(form.tags.data, user_id)
+
+        current_operation.form_processing(form, tags_objects_list)
+        if not tags_objects_list:
+            current_operation.tags.clear()  # Если просто передавать пустое значение, теги не удаляются полностью
+
+        session.add(current_operation)
+        session.commit()
+
         if operation_id:
-            operation_to_delete = session.query(Operation).filter(Operation.id == operation_id).one_or_none()
-            #  добавить проверку, чтобы юзер не мог удалять чужие операции введя id в get запросе вручную
-            session.delete(operation_to_delete)
-            session.commit()
-            flash(f'Операция удалена. id {operation_to_delete.id}')
-            return redirect(url_for('operations'))
-    elif request.method == "GET" and request.args.get('action', default='', type=str) == 'update':
-        if operation_id:
-            operation_to_edit = session.query(Operation).filter(Operation.id == operation_id).one_or_none()
-            form.account.default = int(operation_to_edit.id_account)
-            form.category.default = int(operation_to_edit.id_cat)
-            #print(get_operation_tags_id(operation_id))
-            pass
-            
+            flash(f'Операция обновлена')
+        else:
+            flash(f'Операция добавлена')
+
+        return redirect(url_for('operations'))
+
     return render_template("operations.html", form=form, operations=user_operations)
 
 
 """
-методы ниже оставить здесь, в модели добавить или просто в отдельный файл?
+Методы ниже оставить здесь, в модели добавить или просто в отдельный файл?
 """
 
 
@@ -217,8 +219,11 @@ def get_user_tags(id_user):
 
 def get_operation_tags_id(operation_id):
     tags_id = []
-    query = session.query(Operation.id, Operation.tags).filter(Operation.id == operation_id).all()
-    pass
+    result = session.query(Operation).filter(Operation.id == operation_id).one_or_none()
+    if result:
+        for tag in result.tags:
+            tags_id.append(tag.id)
+    return tags_id
 
 
 def get_user_operations(id_user):
@@ -227,18 +232,24 @@ def get_user_operations(id_user):
         return
     user_accounts_id = []  # как это написать в одну строку?
     user_accounts_id = [account[0] for account in user_accounts]
-    # В данный момент, вместо названий операций и категорий выводятся теги, возможно ли с помощью sql запроса, сразу выдирать названия или лучше использовать другой способ?
+    # В данный момент, вместо названий операций и категорий выводятся id, возможно ли с помощью sql запроса сразу выдирать названия или лучше использовать другой способ?
     operations = session.query(Operation).filter(Operation.id_account.in_(user_accounts_id)).order_by(Operation.creation_time.desc()).all()
     if operations:
         return operations
 
 
-def get_tag_obj(tag_id, user_id):
-    query = session.query(Tag).filter(Tag.id == tag_id, Tag.id_user == user_id).first()
-    if query:
-        return query  # Если тег существует, вернуть его объект
+def get_tags_objects(tags_id_list, id_user):  # wtfforms MultipleSelectField в data возвращает список выбранных id 
+    tag_objects_list = []
+    if tags_id_list:
+        for tag_id in tags_id_list:
+            query = session.query(Tag).filter(Tag.id == tag_id, Tag.id_user == id_user).one_or_none()
+            if query:
+                tag_objects_list.append(query)
+            else:
+                pass  # Если такого тега нет, добавить новый объект и вернуть его? Откуда брать id тогда? Надо тогда еще имена передавать
+        return tag_objects_list
     else:
-        pass  # Если нет, добавить новый объект и вернуть его, сейчас нет возможности добавить новый тег через операцию
+        return
 
 
 @app.route('/reports')

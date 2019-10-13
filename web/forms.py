@@ -27,13 +27,14 @@ class LoginForm(FlaskForm):
 
 
 class OperationForm(FlaskForm):
+    id = HiddenField('id')
     category = SelectField('Категория', validators=[DataRequired()], coerce=int)
     account = SelectField('Счет', validators=[DataRequired()], coerce=int)
     tags = SelectMultipleField('Теги', coerce=int)
     name = StringField('Название', validators=[DataRequired()])
     description = TextField('Описание (опционально)')
     value = DecimalField('Сумма', validators=[DataRequired()])
-    submit = SubmitField('Добавить')
+    submit = SubmitField('Отправить')
     # дата операции
 
 
