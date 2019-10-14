@@ -20,9 +20,9 @@ class CategoryForm(FlaskForm):
 
 
 class LoginForm(FlaskForm):
-    telegram = StringField('Логин телеграм', validators=[DataRequired()], default="mytg")
+    telegram = StringField('Логин телеграм', validators=[DataRequired()])
     password = PasswordField('Пароль', validators=[DataRequired()])
-    remember_me = BooleanField('Запомнить?')
+    remember_me = BooleanField('Запомнить?', default=True)
     submit = SubmitField('Войти')
 
 
