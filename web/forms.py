@@ -15,7 +15,7 @@ class CategoryForm(FlaskForm):
     id = HiddenField('id')
     name = StringField('name', validators = [DataRequired()])
     description = TextField('description')
-    parent_id = SelectField('parent_id')
+    parent_id = SelectField('parent_id', render_kw={"class": "monospace"})
     submit = SubmitField('Submit')
 
 

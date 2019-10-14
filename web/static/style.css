@@ -12,3 +12,6 @@ a.navbar-brand{
 .login_form form{
     width: 350px;
 }
+.monospace{
+    font-family: 'Courier New', Courier, monospace;
+}
