@@ -56,34 +56,35 @@ def logout():
 @login_required
 def accounts():
     id = request.values.get('id', default=0, type=int)
-    a = session.query(Account).filter(Account.id == id and Account.id_user == current_user.get_id()).one_or_none()
+    id_user = current_user.get_id()
+    account = session.query(Account).filter(Account.id == id and Account.id_user == id_user).one_or_none()
 
-    if not a:
-        a = Account()
+    if not account:
+        account = Account()
     elif request.args.get('action', default='', type=str) == 'delete':
-        session.delete(a)
+        session.delete(account)
         session.commit()
-        flash(f"Account was deleted (id='{a.id}', name='{a.name}')")
+        flash(f"Account was deleted (id='{account.id}', name='{account.name}')")
         return redirect(url_for('accounts'))
 
-    form = AccountForm(obj=a)
+    form = AccountForm(obj=account)
     form.id_currency.choices = [(str(i), n) for i, n in session.query(Currency.id, Currency.name)]
 
     if form.validate_on_submit():
-        a.add_form_data(form)
-        session.add(a)
+        account.add_form_data(form)
+        session.add(account)
         session.commit()
         if id:
-            flash(f"Account was updated (id='{a.id}', name='{a.name}')")
+            flash(f"Account was updated (id='{account.id}', name='{account.name}')")
         else:
-            flash(f"Account was created (id='{a.id}', name='{a.name}')")
+            flash(f"Account was created (id='{account.id}', name='{account.name}')")
         return redirect(url_for('accounts'))
 
     to_form = {
         "title" : "Accounts",
         "id" : id,
         "form" : form,
-        "data" : session.query(Account).filter(Account.id_user == current_user.get_id()).order_by('id').all(),
+        "data" : session.query(Account).filter(Account.id_user == id_user).order_by('id').all(),
     }
     return render_template("accounts.html", **to_form)
 
@@ -92,31 +93,32 @@ def accounts():
 @login_required
 def categories():
     id = request.values.get('id', default=0, type=int)
-    c = session.query(Category).filter(Category.id == id and Category.id_user == current_user.get_id()).one_or_none()
+    id_user = current_user.get_id()
+    category = session.query(Category).filter(Category.id == id and Category.id_user == id_user).one_or_none()
 
-    if not c:
-        c = Category()
+    if not category:
+        category = Category()
     elif request.args.get('action', default='', type=str) == 'delete':
-        session.delete(c)
+        session.delete(category)
         session.commit()
-        flash(f"Category was deleted (id='{c.id}', name='{c.name}')")
+        flash(f"Category was deleted (id='{category.id}', name='{category.name}')")
         return redirect(url_for('categories'))
 
-    form = CategoryForm(obj=c)
-    data = session.query(Category).filter(Category.id_user == current_user.get_id()).order_by('id').all()
+    form = CategoryForm(obj=category)
+    data = session.query(Category).filter(Category.id_user == id_user).order_by('id').all()
     tree = Tree(data)
     form.parent_id.choices = tree.return_choises()
 
     if form.validate_on_submit():
         if form.parent_id.data == "0":
             form.parent_id.data = None
-        c.add_form_data(form)
-        session.add(c)
+        category.add_form_data(form)
+        session.add(category)
         session.commit()
         if id:
-            flash(f"Category was updated (id='{c.id}', name='{c.name}')")
+            flash(f"Category was updated (id='{category.id}', name='{category.name}')")
         else:
-            flash(f"Category was created (id='{c.id}', name='{c.name}')")
+            flash(f"Category was created (id='{category.id}', name='{category.name}')")
         return redirect(url_for('categories'))
 
     to_form = {
@@ -150,33 +152,34 @@ def settings():
 @login_required
 def tags():
     id = request.values.get('id', default=0, type=int)
-    t = session.query(Tag).filter(Tag.id == id and Tag.id_user == current_user.get_id()).one_or_none()
+    id_user = current_user.get_id()
+    tag = session.query(Tag).filter(Tag.id == id and Tag.id_user == id_user).one_or_none()
 
-    if not t:
-        t = Tag()
+    if not tag:
+        tag = Tag()
     elif request.args.get('action', default='', type=str) == 'delete':
-        session.delete(t)
+        session.delete(tag)
         session.commit()
-        flash(f"Tag was deleted (id='{t.id}', name='{t.name}')")
+        flash(f"Tag was deleted (id='{tag.id}', name='{tag.name}')")
         return redirect(url_for('tags'))
 
-    form = TagForm(obj=t)
+    form = TagForm(obj=tag)
 
     if form.validate_on_submit():
-        t.add_form_data(form)
-        session.add(t)
+        tag.add_form_data(form)
+        session.add(tag)
         session.commit()
         if id:
-            flash(f"Tag was updated (id='{t.id}', name='{t.name}')")
+            flash(f"Tag was updated (id='{tag.id}', name='{tag.name}')")
         else:
-            flash(f"Tag was created (id='{t.id}', name='{t.name}')")
+            flash(f"Tag was created (id='{tag.id}', name='{tag.name}')")
         return redirect(url_for('tags'))
 
     to_form = {
         "title" : "Tags",
         "id" : id,
         "form" : form,
-        "data" : session.query(Tag).filter(Tag.id_user == current_user.get_id()).order_by('id').all(),
+        "data" : session.query(Tag).filter(Tag.id_user == id_user).order_by('id').all(),
     }
     return render_template("tags.html", **to_form)
 

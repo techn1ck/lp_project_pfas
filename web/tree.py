@@ -32,13 +32,13 @@ class Tree():
 
     def _draw_tree(self):
         out = ''
-        l = len(self.level)-1
-        for i in range(l):
+        last_level_index = len(self.level)-1
+        for i in range(last_level_index):
             if self.level[i]:
                 out += '. '
             else:
                 out += '| '
-        if self.level[l]:
+        if self.level[last_level_index]:
            out += '+--'
         else:
             out += '|--'
