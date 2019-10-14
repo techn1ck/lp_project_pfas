@@ -162,19 +162,18 @@ def operations():
         return redirect(url_for('operations'))
 
     elif request.method == "GET" and request.args.get('action', type=str) == "update":
-        form.id.default = current_operation.id
         form.account.default = current_operation.id_account
         form.category.default = current_operation.id_cat
         form.tags.default = get_operation_tags_id(operation_id)
         form.name.default = current_operation.name
         form.description.default = current_operation.description
         form.value.default = current_operation.value
-        form.process()
+        form.process()  # отрендерить форму заного
 
     elif form.validate_on_submit() and request.method == "POST":  # Отправка формы
         tags_objects_list = get_tags_objects(form.tags.data, user_id)
 
-        current_operation.form_processing(form, tags_objects_list)
+        current_operation.form_processing(form, tags_objects_list, operation_id)
         if not tags_objects_list:
             current_operation.tags.clear()  # Если просто передавать пустое значение, теги не удаляются полностью
 
@@ -238,7 +237,7 @@ def get_user_operations(id_user):
         return operations
 
 
-def get_tags_objects(tags_id_list, id_user):  # wtfforms MultipleSelectField в data возвращает список выбранных id 
+def get_tags_objects(tags_id_list, id_user):  # wtfforms MultipleSelectField в data возвращает список выбранных id
     tag_objects_list = []
     if tags_id_list:
         for tag_id in tags_id_list:

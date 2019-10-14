@@ -27,7 +27,6 @@ class LoginForm(FlaskForm):
 
 
 class OperationForm(FlaskForm):
-    id = HiddenField('id')
     category = SelectField('Категория', validators=[DataRequired()], coerce=int)
     account = SelectField('Счет', validators=[DataRequired()], coerce=int)
     tags = SelectMultipleField('Теги', coerce=int)
