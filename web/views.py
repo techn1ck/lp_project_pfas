@@ -1,16 +1,14 @@
-from werkzeug.security import check_password_hash
-from werkzeug.urls import url_parse
 from flask import render_template, flash, redirect, url_for, request
 from flask_login import current_user, login_user, logout_user, login_required
 from sqlalchemy.orm import sessionmaker
+from werkzeug.urls import url_parse
 from .forms import AccountForm, CategoryForm, LoginForm, OperationForm, TagForm
 from .tree import Tree
 from web import app, login
 from web.models import Account, Category, Currency, User, Operation, Tag, create_engine
-from cfg import DB_STRING
 
 
-engine = create_engine(DB_STRING)
+engine = create_engine(app.config['SQLALCHEMY_DATABASE_URI'])
 Session = sessionmaker()
 Session.configure(bind=engine)
 session = Session()
