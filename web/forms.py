@@ -5,18 +5,18 @@ from wtforms.validators import DataRequired
 
 class AccountForm(FlaskForm):
     id = HiddenField('id')
-    name = StringField('name', validators=[DataRequired()])
-    description = TextField('description')
-    id_currency = SelectField('id_currency')
-    submit = SubmitField('Submit')
+    name = StringField('Название счета', validators=[DataRequired()])
+    description = TextField('Описание')
+    id_currency = SelectField('Валюта счета')
+    submit = SubmitField('Отправить')
 
 
 class CategoryForm(FlaskForm):
     id = HiddenField('id')
-    name = StringField('name', validators=[DataRequired()])
-    description = TextField('description')
-    parent_id = SelectField('parent_id', render_kw={"class": "monospace"})
-    submit = SubmitField('Submit')
+    name = StringField('Название категории', validators=[DataRequired()])
+    description = TextField('Описание')
+    parent_id = SelectField('Родительская категория')
+    submit = SubmitField('Отправить')
 
 
 class LoginForm(FlaskForm):
@@ -27,7 +27,7 @@ class LoginForm(FlaskForm):
 
 
 class OperationForm(FlaskForm):
-    category = SelectField('Категория', validators=[DataRequired()], coerce=int)
+    category = SelectField('Категория', validators=[DataRequired()])
     account = SelectField('Счет', validators=[DataRequired()], coerce=int)
     tags = SelectMultipleField('Теги', coerce=int)
     name = StringField('Название', validators=[DataRequired()])
@@ -39,6 +39,6 @@ class OperationForm(FlaskForm):
 
 class TagForm(FlaskForm):
     id = HiddenField('id')
-    name = StringField('name', validators=[DataRequired()])
-    description = TextField('description')
-    submit = SubmitField('Submit')
+    name = StringField('Название', validators=[DataRequired()])
+    description = TextField('Описание')
+    submit = SubmitField('Отправить')

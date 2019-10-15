@@ -10,7 +10,7 @@ class Tree():
         self.data = data
 
     def return_choises(self):
-        self.out = [(str(0), " - НЕТ - ")]
+        self.out = [('', " - НЕТ - ")]
         if self.data:
             self._make_tree()
         return self.out
@@ -26,7 +26,7 @@ class Tree():
                 else:
                     self.out.append(('', ''))
                 self.out.append((str(obj.id), drawing + obj.name))
-                self._make_tree(obj.id)
+                self._make_tree(parent_id=obj.id)
                 if parent_id:
                     self.level.pop()
 

@@ -10,7 +10,7 @@ from cfg import DB_STRING
 
 
 if __name__ == '__main__':
-    engine = create_engine(DB_STRING, echo=True)
+    engine = create_engine(DB_STRING)
     Base.metadata.create_all(engine)
 
     Session = sessionmaker()
@@ -62,6 +62,7 @@ if __name__ == '__main__':
 
     """ данные для пользователя 1
     """
+
     cat1 = Category(id_user=user1.id, parent_id=None, name='Приходы')
     cat2 = Category(id_user=user1.id, parent_id=None, name='Расходы')
     cat3 = Category(id_user=user1.id, parent_id=None, name='Кредиты')
@@ -94,9 +95,9 @@ if __name__ == '__main__':
     ])
     session.commit()
  
-
-    """ данные для пользователя 2
+    """ данные для пользователя 1
     """
+
     cat1 = Category(id_user=user2.id, parent_id=None, name='ЮФ')
     cat2 = Category(id_user=user2.id, parent_id=None, name='Проекты')
     cat3 = Category(id_user=user2.id, parent_id=None, name='Расходы')
