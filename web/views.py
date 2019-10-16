@@ -82,7 +82,7 @@ def accounts():
         "title": "Accounts",
         "id": id,
         "form": form,
-        "data": session.query(Account).filter(Account.id_user == id_user).order_by('id').all(),
+        "accounts": session.query(Account).filter(Account.id_user == id_user).order_by('id').all(),
     }
     return render_template("accounts.html", **to_form)
 
@@ -103,8 +103,8 @@ def categories():
         return redirect(url_for('categories'))
 
     form = CategoryForm(obj=category)
-    data = session.query(Category).filter(Category.id_user == id_user).order_by('id').all()
-    tree = Tree(data)
+    categories = session.query(Category).filter(Category.id_user == id_user).order_by('id').all()
+    tree = Tree(categories)
     form.parent_id.choices = tree.return_choises()
 
     if form.validate_on_submit():
@@ -123,7 +123,7 @@ def categories():
         "title": "Categories",
         "id": id,
         "form": form,
-        "data": data,
+        "categories": categories,
     }
     return render_template("categories.html", **to_form)
 
@@ -142,8 +142,12 @@ def operations():
         current_operation = Operation()
 
     form.account.choices = get_user_accs(user_id)
-    form.category.choices = get_user_categories(user_id)
     form.tags.choices = get_user_tags(user_id)
+
+    categories = session.query(Category).filter(Category.id_user == user_id).order_by('id').all()
+    tree = Tree(categories)
+    form.category.choices = tree.return_choises()
+
     #  в choises должен быть пустой массив, если у пользователя нет счетов\категорий\тегов, иначе выдает exception
 
     if request.method == "GET" and request.args.get('action', default='', type=str) == 'delete':  # удаление
@@ -286,7 +290,7 @@ def tags():
         "title" : "Tags",
         "id" : id,
         "form" : form,
-        "data" : session.query(Tag).filter(Tag.id_user == id_user).order_by('id').all(),
+        "tags" : session.query(Tag).filter(Tag.id_user == id_user).order_by('id').all(),
     }
     return render_template("tags.html", **to_form)
 
