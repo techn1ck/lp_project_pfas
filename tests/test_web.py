@@ -1,32 +1,44 @@
 import pytest
-from sqlalchemy.orm import sessionmaker
-from web import app
-from web.models import Account, Base, Category, Currency, User, Operation, Tag, create_engine
-
-engine = create_engine(app.config['SQLALCHEMY_DATABASE_URI'])
-Session = sessionmaker()
-Session.configure(bind=engine)
-session = Session()
+from web import app, init_db
+#from web.models import Account, Base, Category, Currency, User, Operation, Tag
 
 
 @pytest.fixture
-def app():
-    return app
+def client():
+    app.config['TESTING'] = True
+    with app.test_client() as client:
+        with app.app_context():
+            init_db(app)
+        yield client
 
 
-@pytest.fixture
-def client(app):
-    return app.test_client()
+def test_login_page(client):
+    # проверяем, что в первый раз при заходе на главную страницу нас редиректит на логин и форма доступна
+    rv = client.get('/', follow_redirects=True)
+    assert b'login_form' in rv.data
 
 
-@pytest.fixture
-def db(app):
-    with app.app_context():
-        db = Base.metadata.create_all(engine)
-        yield db
-        Base.metadata.drop_all(engine)
+def login(client, username, password):
+    return client.post('/login', data=dict(
+        username=username,
+        password=password
+    ), follow_redirects=True)
 
 
-# тест создания приложения
-def test_app_creates(app):
-    assert app
+def logout(client):
+    return client.get('/logout', follow_redirects=True)
+
+
+# def test_login_logout(client):
+#     # проверка того, что логин и логаут работает
+#     rv = login(client, app.config['USERNAME'], app.config['PASSWORD'])
+#     assert b'operations' in rv.data
+
+#     rv = logout(client)
+#     assert b'login_form' in rv.data
+
+#     rv = login(client, app.config['USERNAME'] + 'x', app.config['PASSWORD'])
+#     assert b'Invalid username' in rv.data
+
+#     rv = login(client, app.config['USERNAME'], app.config['PASSWORD'] + 'x')
+#     assert b'Invalid password' in rv.data
