@@ -2,4 +2,18 @@
 {% block title %}Отчеты{% endblock %}
 {% block app_content %}
 <h1>Отчеты</h1>
+
+{% if categories is iterable %}
+    <ul>
+    {% for category in categories %}
+        {{ category.left_tag|safe }}
+        {{ category.obj.name }}
+        {{ category.right_tag|safe }}
+    {% endfor %}
+    </ul>>
+{% else %}
+    Категорий нет
+{% endif %}
+
+
 {% endblock %}

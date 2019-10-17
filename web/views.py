@@ -252,7 +252,14 @@ def get_tags_objects(tags_id_list, id_user):  # wtfforms MultipleSelectField в 
 @app.route('/reports')
 @login_required
 def reports():
-    return render_template("reports.html")
+    user_id = current_user.get_id()
+    categories = session.query(Category).filter(Category.id_user == user_id).order_by('id').all()
+    tree = Tree(categories)
+
+    to_form = {
+        "categories" : tree.return_tree(),
+    }
+    return render_template("reports.html", **to_form)
 
 
 @app.route('/settings')
