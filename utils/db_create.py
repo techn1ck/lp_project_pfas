@@ -6,11 +6,11 @@ from datetime import datetime, date
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from web.models import Account, Category, Base, Tag, User, Currency, Currency_Rate, create_engine, sessionmaker, current_user
-from cfg import DB_STRING
+from cfg import Config
 
 
 if __name__ == '__main__':
-    engine = create_engine(DB_STRING)
+    engine = create_engine(Config.SQLALCHEMY_DATABASE_URI, echo=True)
     Base.metadata.create_all(engine)
 
     Session = sessionmaker()
@@ -311,4 +311,3 @@ if __name__ == '__main__':
 
     
     session.close()
-
