@@ -1,3 +1,7 @@
+import os, sys
+from os.path import dirname, join, abspath
+sys.path.insert(0, abspath(join(dirname(__file__), '..')))
+
 import pytest
 
 from sqlalchemy import create_engine
@@ -7,7 +11,7 @@ from web import app
 from web.models import Account, Base, Category, Currency, Operation, Tag, User
 
 from cfg import TestConfig
-from .data_test import test_user, add_test_user
+from tests.data_test import test_user, add_test_user
 
 
 engine = create_engine(TestConfig.SQLALCHEMY_DATABASE_URI)

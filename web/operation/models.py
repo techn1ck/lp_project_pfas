@@ -1,4 +1,11 @@
-from ._service import *
+from datetime import datetime
+from flask_login import current_user
+
+from sqlalchemy import Table, Column, Integer, String, Boolean, Numeric, DateTime, ForeignKey
+from sqlalchemy.orm import relationship
+
+from web.db import Base
+
 
 operation_tag_table = Table(
     'operation_tag',
@@ -56,7 +63,6 @@ class Operation(Base):
         else:
             self.creation_time = datetime.now()
         self.modification_time = None
-
 
     def __repr__(self):
         return f'<Operation: {self.id}, {self.name}>'

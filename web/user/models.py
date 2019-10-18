@@ -1,5 +1,11 @@
-from ._service import *
-from .shared import shared_acc_user_table
+from flask_login import UserMixin
+from sqlalchemy import Column, Integer, String, Boolean, DateTime, BigInteger, ForeignKey
+from sqlalchemy.orm import relationship
+from werkzeug.security import check_password_hash
+
+from web.shared.models import shared_acc_user_table
+from web.db import Base
+
 
 class User(Base, UserMixin):
     __tablename__ = 'user'

@@ -1,4 +1,6 @@
-from ._service import *
+from sqlalchemy import Column, Integer, String, Boolean, ForeignKey
+
+from web.db import Base
 
 
 class FutureOperaion(Base):

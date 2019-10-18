@@ -1,4 +1,7 @@
-from ._service import *
+from sqlalchemy import Table, Column, Integer, String, Boolean, ForeignKey, Float
+from sqlalchemy.orm import relationship
+
+from web.db import Base
 
 
 shared_acc_user_table = Table('shared_acc_user', Base.metadata,
@@ -54,6 +57,3 @@ class SharedOperaion(Base):
 
     def __repr__ (self):
         return f'<SharedOperation: {self.id}, {self.name}>'
-
-
-

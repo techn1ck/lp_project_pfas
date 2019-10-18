@@ -5,14 +5,6 @@ class Tree():
         На вход кладем список объектов с обязательными полями id, parent_id, name
 
         На выходе получаем отсортированный список с подготовленными для вывода элементами
-    """
-    data = []
-    tree = []
-
-    _level = deque()
-
-    def __init__(self, data):
-        """ Заполняем и сортируем список словарей self.tree:
             [
                 {
                     "obj": self.data[i], # объект
@@ -25,13 +17,21 @@ class Tree():
                     "choices_tree_drawing": рисунок для selecta
                 },
             ]
+    """
+    data = []
+    tree = []
+
+    _level = deque()
+
+    def __init__(self, data):
+        """ Заполняем и сортируем список словарей self.tree:
         """
         self.data = data
         if self.data and isinstance(self.data, list):
             if hasattr(self.data[0], "id") and hasattr(self.data[0], "parent_id"):
                 self._make_tree()
             else:
-                raise AttributeError("В объекте отсутствуют поля ID или PARENT_ID")
+                raise AttributeError("В объектах списка отсутствуют поля ID или PARENT_ID")
 
     def return_choises(self):
         """ Возвращаем список элементов для form.{name}.choices 

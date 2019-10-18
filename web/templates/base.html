@@ -15,9 +15,9 @@
             <a href="/" class="navbar-brand">[ PFAS ]</a>
             {% if current_user.is_authenticated %}
             <ul class="nav navbar-nav">
-                <li><a href="/operations">Операции</a></li>
-                <li><a href="/shared_accounts">Совместные операции</a></li>
-                <li><a href="/reports">Отчеты</a></li>
+                <li><a href="{{ url_for('operation.operations') }}">Операции</a></li>
+                <li><a href="{{ url_for('shared.shared_ops') }}">Совместные операции</a></li>
+                <li><a href="{{ url_for('report.reports') }}">Отчеты</a></li>
             </ul>
             {% endif %}
             <ul class="nav navbar-nav navbar-right">
@@ -25,18 +25,18 @@
                     <li class="dropdown">
                         <a class="dropdown-toggle" data-toggle="dropdown" role="button" href="#">{{ current_user.name }}</a>
                         <ul class="dropdown-menu">
-                            <li><a href="/accounts/">Счета</a></li>
-                            <li><a href="/categories/">Категории</a></li>
-                            <li><a href="/tags">Теги</a></li>
-                            <li><a href="/settings">Настройки</a></li>
+                            <li><a href="{{ url_for('account.accounts_list') }}">Счета</a></li>
+                            <li><a href="{{ url_for('category.categories_list') }}">Категории</a></li>
+                            <li><a href="{{ url_for('tag.tag_list') }}">Теги</a></li>
+                            <li><a href="{{ url_for('user.user_settings') }}">Настройки</a></li>
                             <li role="separator" class="divider"></li>
-                            <li><a href="/logout">Выход</a></li>
+                            <li><a href="{{ url_for('user.logout') }}">Выход</a></li>
                         </ul>
 
                     </li>
                 {% endif %}
                 {% if current_user.is_anonymous %}
-                    <li><a href="/login">Вход</a></li>
+                    <li><a href="{{ url_for('user.login') }}">Вход</a></li>
                 {% endif %}
             </ul>
             </div>
