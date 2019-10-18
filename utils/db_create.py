@@ -5,12 +5,17 @@ sys.path.insert(0, abspath(join(dirname(__file__), '..')))
 from datetime import datetime, date
 from werkzeug.security import generate_password_hash, check_password_hash
 
+<<<<<<< HEAD
 from web.models import Account, Category, Base, Tag, User, Currency, Currency_Rate, Operation, create_engine, sessionmaker, current_user
 from cfg import DB_STRING
+=======
+from web.models import Account, Category, Base, Tag, User, Currency, Currency_Rate, create_engine, sessionmaker, current_user
+from cfg import Config
+>>>>>>> tests
 
 
 if __name__ == '__main__':
-    engine = create_engine(DB_STRING)
+    engine = create_engine(Config.SQLALCHEMY_DATABASE_URI, echo=True)
     Base.metadata.create_all(engine)
 
     Session = sessionmaker()
@@ -347,4 +352,3 @@ if __name__ == '__main__':
     session.commit()
     
     session.close()
-

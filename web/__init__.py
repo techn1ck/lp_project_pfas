@@ -1,15 +1,18 @@
 from flask import Flask
 from flask_login import LoginManager
 from flask_bootstrap import Bootstrap
-
-from cfg import DB_STRING, SECRET_KEY
+from cfg import Config
 
 app = Flask(__name__)
-app.config.from_object('cfg')
+app.config.from_object(Config)
 
 login = LoginManager(app)
 login.login_view = 'login'
 Bootstrap(app)
 
-app.config['SECRET_KEY'] = SECRET_KEY
 from web import views
+from .db import session
+
+@app.teardown_appcontext
+def cleanup(resp_or_exc):
+    session.remove()
