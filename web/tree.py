@@ -22,7 +22,7 @@ class Tree():
                     "level": [], # уровень вложенности,
                     "first_child": False, # первый дочерний элемент в ветке
                     "last_child": False, # последний дочерний элемент в ветке
-                    "choices_tree_drawing": False, # последний дочерний элемент в ветке
+                    "choices_tree_drawing": рисунок для selecta
                 },
             ]
         """

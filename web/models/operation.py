@@ -43,8 +43,20 @@ class Operation(Base):
         if id_operation:
             self.modification_time = datetime.now()
 
-    def __init__(self):
-        pass
+    def __init__(self, id_cat=0, id_account=0, name='', description='', value=0, tags=[], date=''):
+        self.id_cat = id_cat
+        self.id_account = id_account
+        self.name = name
+        self.description = description
+        self.value = value
+        self.tags = tags
+        self.is_actual = True
+        if date:
+            self.creation_time = date
+        else:
+            self.creation_time = datetime.now()
+        self.modification_time = None
+
 
     def __repr__(self):
         return f'<Operation: {self.id}, {self.name}>'
