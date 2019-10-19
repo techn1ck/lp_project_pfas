@@ -4,7 +4,9 @@ from sqlalchemy.orm import relationship
 from web.db import Base
 
 
-shared_acc_user_table = Table('shared_acc_user', Base.metadata,
+shared_acc_user_table = Table(
+    'shared_acc_user',
+    Base.metadata,
     Column('id_user', Integer, ForeignKey('user.id')),
     Column('id_shared_acc', Integer, ForeignKey('shared_account.id')),
     Column('user_ratio', Float)
@@ -22,7 +24,7 @@ class SharedAccount(Base):
     name = Column(String)
     decscription = Column(String)
 
-    creation_time = Column(String) 
+    creation_time = Column(String)
     modification_time = Column(String)
     is_actual = Column(Boolean)
 
@@ -31,10 +33,10 @@ class SharedAccount(Base):
         secondary=shared_acc_user_table,
         back_populates="shared_accounts")
 
-    def __init__ (self):
+    def __init__(self):
         pass
 
-    def __repr__ (self):
+    def __repr__(self):
         return f'<SharedAccount: {self.id}, {self.name}>'
 
 
@@ -48,12 +50,12 @@ class SharedOperaion(Base):
     name = Column(String)
     decscription = Column(String)
 
-    creation_time = Column(String) 
+    creation_time = Column(String)
     modification_time = Column(String)
     is_actual = Column(Boolean)
 
-    def __init__ (self):
+    def __init__(self):
         pass
 
-    def __repr__ (self):
+    def __repr__(self):
         return f'<SharedOperation: {self.id}, {self.name}>'

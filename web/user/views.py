@@ -3,15 +3,8 @@ from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
 
 from .forms import LoginForm
-#from web import 
 from web.db import session
-from web.tree import Tree
-from web.account.models import Account
-from web.category.models import Category
-from web.operation.models import Operation
-from web.tag.models import Tag
 from web.user.models import User
-
 
 blueprint = Blueprint('user', __name__)
 

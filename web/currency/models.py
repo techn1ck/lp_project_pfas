@@ -1,5 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, Numeric, Date, ForeignKey
-from sqlalchemy.orm import relationship
+from sqlalchemy import Column, Integer, String, Numeric, Date, ForeignKey
 
 from web.db import Base
 
@@ -27,8 +26,6 @@ class Currency_Rate(Base):
     id = Column(Integer, primary_key=True)
 
     id_account = Column(Integer, ForeignKey('account.id'))
-    # id_account_currency = relationship("Account", foreign_keys="Account.id_currency")
-    # id_default_currency = relationship("User", foreign_keys="User.id_currency")
     id_account_currency = Column(Integer)
     id_default_currency = Column(Integer)
     rate = Column(Numeric)

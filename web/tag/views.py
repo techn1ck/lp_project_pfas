@@ -37,9 +37,9 @@ def tag_list():
         return redirect(url_for('tag.tag_list'))
 
     to_form = {
-        "title" : "Tags",
-        "id" : id,
-        "form" : form,
-        "tags" : session.query(Tag).filter(Tag.id_user == id_user).order_by('id').all(),
+        "title": "Tags",
+        "id": id,
+        "form": form,
+        "tags": session.query(Tag).filter(Tag.id_user == id_user).order_by('id').all(),
     }
     return render_template("tag/list.html", **to_form)

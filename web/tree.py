@@ -1,5 +1,6 @@
 from collections import deque
 
+
 class Tree():
     """ Класс для построения деревьев
         На вход кладем список объектов с обязательными полями id, parent_id, name
@@ -27,6 +28,7 @@ class Tree():
         """ Заполняем и сортируем список словарей self.tree:
         """
         self.data = data
+        self.tree = []
         if self.data and isinstance(self.data, list):
             if hasattr(self.data[0], "id") and hasattr(self.data[0], "parent_id"):
                 self._make_tree()
@@ -52,20 +54,18 @@ class Tree():
         return self.tree
 
     def _make_tree(self, parent_id=0):
-        has_child_flag = False
         for obj in self.data:
             # how to compare None and 0 (None == 0 = True)?
             if (obj.parent_id == parent_id) or (not obj.parent_id and not parent_id):
-                has_child_flag = True
-                first_child = False 
+                first_child = False
                 last_child = False
                 left_tag = "<li>"
                 right_tag = "</li>"
 
                 if parent_id:
                     first_child, last_child = self._siblings(obj.id, obj.parent_id)
-                    self._level.append( last_child )
-                
+                    self._level.append(last_child)
+
                 if first_child:
                     left_tag = "<ul><li>"
                 if last_child:

@@ -1,5 +1,4 @@
 from datetime import datetime
-from flask_login import current_user
 
 from sqlalchemy import Table, Column, Integer, String, Boolean, Numeric, DateTime, ForeignKey
 from sqlalchemy.orm import relationship

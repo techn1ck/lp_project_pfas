@@ -41,7 +41,6 @@ def categories_list():
         else:
             flash(f"Category was created (id='{category.id}', name='{category.name}')")
         return redirect(url_for('category.categories_list'))
-    
 
     to_form = {
         "title": "Categories",

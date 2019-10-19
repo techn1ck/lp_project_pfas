@@ -13,12 +13,12 @@ class FutureOperaion(Base):
     name = Column(String)
     decscription = Column(String)
 
-    creation_time = Column(String) 
+    creation_time = Column(String)
     modification_time = Column(String)
     is_actual = Column(Boolean)
 
-    def __init__ (self):
+    def __init__(self):
         pass
 
-    def __repr__ (self):
+    def __repr__(self):
         return f'<FutureOperation: {self.id}, {self.name}>'

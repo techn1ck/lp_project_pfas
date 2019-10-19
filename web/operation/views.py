@@ -7,6 +7,8 @@ from web.tree import Tree
 from web.account.models import Account
 from web.category.models import Category
 from web.operation.models import Operation
+from web.future_operation.models import FutureOperaion  # без импорта не дает сохранить операцию
+
 from web.tag.models import Tag
 
 
@@ -112,8 +114,11 @@ def get_user_operations(id_user):
         return
     user_accounts_id = []  # как это написать в одну строку?
     user_accounts_id = [account[0] for account in user_accounts]
-    # В данный момент, вместо названий операций и категорий выводятся id, возможно ли с помощью sql запроса сразу выдирать названия или лучше использовать другой способ?
-    operations = session.query(Operation).filter(Operation.id_account.in_(user_accounts_id)).order_by(Operation.creation_time.desc()).all()
+    # В данный момент, вместо названий операций и категорий выводятся id,
+    # возможно ли с помощью sql запроса сразу выдирать названия или лучше использовать другой способ?
+    operations = session.query(Operation).\
+        filter(Operation.id_account.in_(user_accounts_id)).\
+        order_by(Operation.creation_time.desc()).all()
     if operations:
         return operations
 
@@ -126,7 +131,9 @@ def get_tags_objects(tags_id_list, id_user):  # wtfforms MultipleSelectField в 
             if query:
                 tag_objects_list.append(query)
             else:
-                pass  # Если такого тега нет, добавить новый объект и вернуть его? Откуда брать id тогда? Надо тогда еще имена передавать
+                pass
+                # Если такого тега нет, добавить новый объект и вернуть его?
+                # Откуда брать id тогда? Надо тогда еще имена передавать
         return tag_objects_list
     else:
         return
