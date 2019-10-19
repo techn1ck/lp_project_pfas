@@ -1,6 +1,6 @@
 import pytest
 from werkzeug.security import generate_password_hash
-
+from datetime import datetime
 from cfg import TestConfig
 from .test_db import engine, session
 
@@ -14,10 +14,9 @@ def client():
     flask_app = create_app(TestConfig)
     testing_client = flask_app.test_client()
 
-    # Устанавливаем контекст приложения перед запуском тестов
+    # Контекст приложения
     ctx = flask_app.app_context()
     ctx.push()
-
     yield testing_client
 
     ctx.pop()
@@ -25,7 +24,6 @@ def client():
 
 @pytest.fixture(scope='module')
 def init_database():
-
     Base.metadata.create_all(engine)
 
     test_user = {
@@ -43,16 +41,9 @@ def init_database():
 
     new_user = User(**test_user)
     session.add(new_user)
-
     session.commit()
 
-    Base.metadata.drop_all(engine)
+    yield new_user
 
-operation_form_testdata = {
-    "category": 9,
-    "account": 2,
-    "tags": 1,
-    "name": "Test",
-    "description": "test operation",
-    "value": 111,
-}
+    session.close()
+    Base.metadata.drop_all(engine)

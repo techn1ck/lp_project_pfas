@@ -20,7 +20,7 @@ def logout(client):
     return response.data.decode('utf-8')
 
 
-def test_login_logout(client):
+def test_login_logout(client, init_database):
     # проверка того, что логин и логаут работает
 
     data = login(client, "test_user", "test_user")
@@ -42,3 +42,11 @@ def test_login_logout(client):
 #     # Тест добавления операции
 #     query = client.post('/operations', data=operation_form_testdata, follow_redirects=True)
 #     assert 'Операция добавлена' in query.get_data(as_text=True)
+# operation_form_testdata = {
+#     "category": 9,
+#     "account": 2,
+#     "tags": 1,
+#     "name": "Test",
+#     "description": "test operation",
+#     "value": 111,
+# }
