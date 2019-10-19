@@ -1,1 +1,1 @@
-from .web_settings import *
+from .web_settings import Config, TestConfig

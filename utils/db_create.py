@@ -5,17 +5,28 @@ sys.path.insert(0, abspath(join(dirname(__file__), '..')))
 from datetime import datetime, date
 from werkzeug.security import generate_password_hash, check_password_hash
 
-from web.models import Account, Category, Base, Tag, User, Currency, Currency_Rate, create_engine, sessionmaker, current_user
-from cfg import DB_STRING
+from sqlalchemy import create_engine
+
+from web.account.models import Account
+from web.category.models import Category
+from web.currency.models import Currency, Currency_Rate
+from web.future_operation.models import FutureOperaion
+from web.operation.models import Operation, operation_tag_table
+from web.shared.models import SharedAccount, SharedOperaion, shared_acc_user_table
+from web.tag.models import Tag
+from web.user.models import User
+
+from cfg import Config
+from web.db import Base, session
 
 
 if __name__ == '__main__':
-    engine = create_engine(DB_STRING)
+    engine = create_engine(Config.SQLALCHEMY_DATABASE_URI)
     Base.metadata.create_all(engine)
 
-    Session = sessionmaker()
-    Session.configure(bind=engine)
-    session = Session()
+    #Session = sessionmaker()
+    #Session.configure(bind=engine)
+    #session = Session()
     
     test_user1 = {
             "telegram": "mytg",
@@ -95,7 +106,7 @@ if __name__ == '__main__':
     ])
     session.commit()
  
-    """ данные для пользователя 1
+    """ данные для пользователя 2
     """
 
     cat1 = Category(id_user=user2.id, parent_id=None, name='ЮФ')
@@ -104,27 +115,56 @@ if __name__ == '__main__':
     cat4 = Category(id_user=user2.id, parent_id=None, name='Кредиты')
     cat5 = Category(id_user=user2.id, parent_id=None, name='Взаиморасчеты')
 
+    acc1 = Account(id_user=user2.id, id_currency=currency1.id, name='Наличные, рубли')
+    acc2 = Account(id_user=user2.id, id_currency=currency2.id, name='Наличные, доллары')
+    acc3 = Account(id_user=user2.id, id_currency=currency3.id, name='Наличные, евро')
+    acc4 = Account(id_user=user2.id, id_currency=currency1.id, name='Сбербанк, рубли')
+    acc5 = Account(id_user=user2.id, id_currency=currency1.id, name='Альфа-банк, расчетный счет, рубли')
+    acc6 = Account(id_user=user2.id, id_currency=currency2.id, name='Альфа-банк, расчетный счет, доллары')
+    acc7 = Account(id_user=user2.id, id_currency=currency3.id, name='Альфа-банк, расчетный счет, евро')
+    acc8 = Account(id_user=user2.id, id_currency=currency1.id, name='Альфа-банк, мой-сейф, рубли')
+    acc9 = Account(id_user=user2.id, id_currency=currency2.id, name='Альфа-банк, мой-сейф, доллары')
+    acc10 = Account(id_user=user2.id, id_currency=currency3.id, name='Альфа-банк, мой-сейф, евро')
+    acc11 = Account(id_user=user2.id, id_currency=currency1.id, name='Альфа-банк, кредит, рубли')
+    acc12 = Account(id_user=user2.id, id_currency=currency1.id, name='Альфа-банк, кредитная карта, рубли')
+    acc13 = Account(id_user=user2.id, id_currency=currency1.id, name='__виртуальный счет__, рубли')
+    acc14 = Account(id_user=user2.id, id_currency=currency4.id, name='Наличные, чешские кроны')
+
+
+    tag1 = Tag(id_user=user2.id, name='Вова')
+    tag2 = Tag(id_user=user2.id, name='Витя')
+    tag3 = Tag(id_user=user2.id, name='Ozon')
+    tag4 = Tag(id_user=user2.id, name='iGooods')
+    tag5 = Tag(id_user=user2.id, name='Tucson')
+
+
     session.add_all([
-        Account(id_user=user2.id, id_currency=currency1.id, name='Наличные, рубли'),
-        Account(id_user=user2.id, id_currency=currency2.id, name='Наличные, доллары'),
-        Account(id_user=user2.id, id_currency=currency3.id, name='Наличные, евро'),
-        Account(id_user=user2.id, id_currency=currency1.id, name='Сбербанк, рубли'),
-        Account(id_user=user2.id, id_currency=currency1.id, name='Альфа-банк, расчетный счет, рубли'),
-        Account(id_user=user2.id, id_currency=currency2.id, name='Альфа-банк, расчетный счет, доллары'),
-        Account(id_user=user2.id, id_currency=currency3.id, name='Альфа-банк, расчетный счет, евро'),
-        Account(id_user=user2.id, id_currency=currency1.id, name='Альфа-банк, мой-сейф, рубли'),
-        Account(id_user=user2.id, id_currency=currency2.id, name='Альфа-банк, мой-сейф, доллары'),
-        Account(id_user=user2.id, id_currency=currency3.id, name='Альфа-банк, мой-сейф, евро'),
-        Account(id_user=user2.id, id_currency=currency1.id, name='Альфа-банк, кредит, рубли'),
-        Account(id_user=user2.id, id_currency=currency1.id, name='Альфа-банк, кредитная карта, рубли'),
-        Account(id_user=user2.id, id_currency=currency1.id, name='__виртуальный счет__, рубли'),
-        Account(id_user=user2.id, id_currency=currency4.id, name='Наличные, чешские кроны'),
+        acc1,
+        acc2,
+        acc3,
+        acc4,
+        acc5,
+        acc6,
+        acc7,
+        acc8,
+        acc9,
+        acc10,
+        acc11,
+        acc12,
+        acc13,
+        acc14,
 
         cat1,
         cat2,
         cat3,
         cat4,
         cat5,
+
+        tag1,
+        tag2,
+        tag3,
+        tag4,
+        tag5,
     ])
     session.commit()
 
@@ -309,6 +349,13 @@ if __name__ == '__main__':
     ])
     session.commit()
 
+
+
+
+    session.add_all([
+        Operation(id_cat=cat3_5_2.id, id_account=acc1.id, name='Массаж', description='7-й сеанс', value=-1500, tags=[tag2], date=date(2019,10,17)),
+        Operation(id_cat=cat3_5_2.id, id_account=acc1.id, name='Массаж', description='8-й сеанс', value=-1500, tags=[tag2], date=date(2019,10,18)),
+    ])
+    session.commit()
     
     session.close()
-

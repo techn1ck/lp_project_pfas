@@ -5,6 +5,13 @@
 {% block content %}
     <div class="login_form">
         <div class="row">
+                {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    {% for message in messages %}
+                    <div class="alert alert-info" role="alert">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+                {% endwith %}
             <div class="alert alert-danger" role="alert">Test user = mytg:mytg <br />Test user2 = technick:111 </div>
             <div class="col-md-4">
                 {{ wtf.quick_form(form) }}
