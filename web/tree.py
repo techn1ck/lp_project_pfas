@@ -45,7 +45,7 @@ class Tree():
             for row in self.tree:
                 if not row['level_len']:
                     out.append(('', ''))
-                out.append((str(row['obj'].id), row['choices_tree_drawing'] + row['obj'].name))
+                out.append((str(row['obj'].id), self._draw_tree(row) + row['obj'].name))
         return out
 
     def return_tree(self):
@@ -80,22 +80,21 @@ class Tree():
                     "last_child": last_child,
                     "level": self._level,
                     "level_len": len(self._level),
-                    "choices_tree_drawing": self._draw_tree(),
                 })
                 self._make_tree(parent_id=obj.id)
                 if parent_id:
                     self._level.pop()
 
-    def _draw_tree(self):
+    def _draw_tree(self, obj):
         out = ''
-        last_level_index = len(self._level)-1
+        last_level_index = obj.level_len-1
         if last_level_index >= 0:
             for i in range(last_level_index):
-                if self._level[i]:
+                if obj.level[i]:
                     out += '. '
                 else:
                     out += '| '
-            if self._level[last_level_index]:
+            if obj.level[last_level_index]:
                 out += '+--'
             else:
                 out += '|--'
