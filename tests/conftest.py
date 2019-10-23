@@ -46,7 +46,5 @@ def init_database():
     session.add(new_user)
     session.commit()
 
-    yield new_user
-
-    # Base.metadata.drop_all(engine)  # почему-то выдает ошибку, перенес в начало
+    yield
     session.close()
