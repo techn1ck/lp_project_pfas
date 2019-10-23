@@ -4,7 +4,7 @@ sys.path.insert(0, abspath(join(dirname(__file__), '..')))
 
 from sqlalchemy import create_engine
 
-from cfg import Config
+from cfg.web_settings import Config
 from web.db import Base
 
 

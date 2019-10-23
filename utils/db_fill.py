@@ -14,7 +14,6 @@ from web.shared.models import SharedAccount, SharedOperaion, shared_acc_user_tab
 from web.tag.models import Tag
 from web.user.models import User
 
-from cfg import Config
 from web.db import session
 
 
