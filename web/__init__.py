@@ -2,7 +2,7 @@ from flask import Flask
 from flask_login import LoginManager
 from flask_bootstrap import Bootstrap
 
-from cfg import Config
+from cfg.web_settings import Config
 from .db import session
 
 
@@ -20,7 +20,6 @@ def initialize_extensions(app):
     login_manager = LoginManager(app)
     login_manager.login_view = 'user.login'
     Bootstrap(app)
-
 
     from web.user.models import User
     @login_manager.user_loader
@@ -44,6 +43,7 @@ def register_blueprints(app):
     app.register_blueprint(shared_blueprint)
     app.register_blueprint(tag_blueprint)
     app.register_blueprint(user_blueprint)
+
 
 app = create_app(Config)
 @app.teardown_appcontext

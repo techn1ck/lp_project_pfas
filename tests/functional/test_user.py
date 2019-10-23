@@ -35,7 +35,8 @@ def test_login_logout(client, init_database):
 
 # def test_operation_page(client):
 #     login(client, test_user, test_password)
-#     # Страница загрузилась, форма доступна (нужно задать форме уникальный css класс, чтобы точно знать, что это нужная форма)
+#     # Страница загрузилась, форма доступна (нужно задать форме уникальный css класс,
+#     # чтобы точно знать, что это нужная форма)
 #     rv = client.get('/operations', follow_redirects=True)
 #     assert '<h1>Операции</h1>', '<div class="form-group  required">' in rv.get_data(as_text=True)
 

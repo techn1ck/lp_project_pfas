@@ -1,7 +1,7 @@
 import pytest
 from werkzeug.security import generate_password_hash
 from datetime import datetime
-from cfg import TestConfig
+from cfg.web_settings import TestConfig
 from .test_db import engine, session
 
 from web import create_app
@@ -24,6 +24,9 @@ def client():
 
 @pytest.fixture(scope='module')
 def init_database():
+    """ При очистке БД в конце функции тесты вылетают с ошибкой
+    """
+    Base.metadata.drop_all(engine)
     Base.metadata.create_all(engine)
 
     test_user = {
@@ -45,5 +48,5 @@ def init_database():
 
     yield new_user
 
+    # Base.metadata.drop_all(engine)  # почему-то выдает ошибку, перенес в начало
     session.close()
-    Base.metadata.drop_all(engine)
