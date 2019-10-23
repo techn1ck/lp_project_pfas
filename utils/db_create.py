@@ -17,17 +17,12 @@ from web.tag.models import Tag
 from web.user.models import User
 
 from cfg import Config
-from web.db import Base, session
+from web.db import Base, session, engine
 
 
 if __name__ == '__main__':
-    engine = create_engine(Config.SQLALCHEMY_DATABASE_URI)
     Base.metadata.create_all(engine)
 
-    #Session = sessionmaker()
-    #Session.configure(bind=engine)
-    #session = Session()
-    
     test_user1 = {
             "telegram": "mytg",
             "name": "Test",
