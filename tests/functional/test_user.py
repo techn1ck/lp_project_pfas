@@ -20,7 +20,7 @@ def logout(client):
     return response.data.decode('utf-8')
 
 
-def test_login_logout(client, init_database):
+def test_login_logout(client):
     # проверка того, что логин и логаут работает
 
     data = login(client, "test_user", "test_user")
@@ -32,12 +32,13 @@ def test_login_logout(client, init_database):
     data = login(client, "test_user" + 'x', "test_user")
     assert 'Неправильный логин/пароль' in data
 
-"""
-чтобы работало, нужно добавить тестовый счет, категорию и тег
+
+""" чтобы работало, нужно добавить тестовый счет, категорию и тег
 """
 # def test_operation_page(client, init_database):
 #     login(client, "test_user", "test_user")
-#     # Страница загрузилась, форма доступна (нужно задать форме уникальный css класс, чтобы точно знать, что это нужная форма)
+#     # Страница загрузилась, форма доступна (нужно задать форме уникальный css класс,
+#     # чтобы точно знать, что это нужная форма)
 #     response = client.get('/operation', follow_redirects=True)
 #     assert '<h1>Операции</h1>', '<div class="form-group  required">' in response.data.decode('utf-8')
 
