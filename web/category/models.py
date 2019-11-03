@@ -41,5 +41,11 @@ class Category(Base):
         if self.id:
             self.modification_time = datetime.now()
 
+    def invert_is_actual(self):
+        if self.is_actual:
+            self.is_actual = False
+        else:
+            self.is_actual = True
+
     def __repr__(self):
         return f'<Category - {self.name} (ID = {self.id})>'

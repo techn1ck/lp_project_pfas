@@ -1,7 +1,7 @@
 import pytest
 from cfg.web_settings import TestConfig
 from .test_db import engine
-from ._initial_data import insert_test_user
+from ._initial_data import insert_test_user, insert_currency
 
 from web import create_app
 from web.db import Base, session
@@ -12,11 +12,12 @@ def client():
     Base.metadata.drop_all(engine)
     Base.metadata.create_all(engine)
     insert_test_user()
+    insert_currency()
 
     app = create_app(TestConfig)
     with app.test_client() as client:
         yield client
-    
+
     session.close()
     Base.metadata.drop_all(engine)
 

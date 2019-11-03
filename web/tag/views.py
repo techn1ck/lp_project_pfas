@@ -21,9 +21,6 @@ def tag_list():
     if action == 'delete' and tag.id:
         delete_tag(tag)
         return redirect(url_for('tag.tag_list'))
-    # elif action == 'delete' and tag.id and tag.operations:
-        # flash(f"Tag has operations (id='{tag.id}', name='{tag.name}')")
-        # return redirect(url_for('report.reports', id_tag=tag.id))
 
     if action == 'switch' and tag.id:
         change_tag_actual(tag)
@@ -40,7 +37,7 @@ def tag_list():
         "form": form,
         "current_tag": tag,
         "tags": get_tags_list(id_user),
-        "tag_history": get_obj_history('Tag', tag.id, ),
+        "tag_history": get_obj_history('Tag', tag.id),
         "deleted_tags": get_deleted_objects('Tag'),
     }
     return render_template("tag/list.html", **to_form)
