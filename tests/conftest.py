@@ -1,50 +1,32 @@
 import pytest
-from werkzeug.security import generate_password_hash
-from datetime import datetime
 from cfg.web_settings import TestConfig
-from .test_db import engine, session
+from .test_db import engine
+from ._initial_data import insert_test_user, insert_currency
 
 from web import create_app
-from web.user.models import User
-from web.db import Base
+from web.db import Base, session
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope='session')
 def client():
-    flask_app = create_app(TestConfig)
-    testing_client = flask_app.test_client()
-
-    # Контекст приложения
-    ctx = flask_app.app_context()
-    ctx.push()
-    yield testing_client
-
-    ctx.pop()
-
-
-@pytest.fixture(scope='module')
-def init_database():
-    """ При очистке БД в конце функции тесты вылетают с ошибкой
-    """
     Base.metadata.drop_all(engine)
     Base.metadata.create_all(engine)
+    insert_test_user()
+    insert_currency()
 
-    test_user = {
-        "telegram": "test_user",
-        "name": "Test",
-        "surname": "User",
-        "password": generate_password_hash("test_user"),
-        "phone": "123",
-        "email": "test_user",
-        "role": "admin",
-        "creation_time": datetime.now(),
-        "modification_time": None,
-        "is_actual": True
-    }
+    app = create_app(TestConfig)
+    with app.test_client() as client:
+        yield client
 
-    new_user = User(**test_user)
-    session.add(new_user)
-    session.commit()
-
-    yield
     session.close()
+    Base.metadata.drop_all(engine)
+
+
+@pytest.fixture(scope='function')
+def login(client):
+    client.post('/login', data=dict(
+        telegram="test_user",
+        password="test_user"
+    ), follow_redirects=True)
+    yield
+    client.get('/logout', follow_redirects=True)

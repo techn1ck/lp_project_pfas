@@ -33,7 +33,7 @@ class Tag(Base):
             self.id_user = current_user.get_id()
         self.name = name
         self.description = description
-        self.is_actual = 1
+        self.is_actual = True
         self.creation_time = datetime.now()
         self.modification_time = None
 
@@ -42,6 +42,12 @@ class Tag(Base):
         self.description = data.description.data
         if self.id:
             self.modification_time = datetime.now()
+
+    def invert_is_actual(self):
+        if self.is_actual:
+            self.is_actual = False
+        else:
+            self.is_actual = True
 
     def __repr__(self):
         return f'<Tag: {self.id}, {self.name}>'

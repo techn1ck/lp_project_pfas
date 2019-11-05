@@ -1,16 +1,16 @@
-import os, sys
+import sys
 from os.path import dirname, join, abspath
 sys.path.insert(0, abspath(join(dirname(__file__), '..')))
 
 from datetime import datetime, date
-from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.security import generate_password_hash
 
 from web.account.models import Account
 from web.category.models import Category
-from web.currency.models import Currency, Currency_Rate
-from web.future_operation.models import FutureOperaion
-from web.operation.models import Operation, operation_tag_table
-from web.shared.models import SharedAccount, SharedOperaion, shared_acc_user_table
+from web.currency.models import Currency
+# from web.future_operation.models import FutureOperaion
+from web.operation.models import Operation
+# from web.shared.models import SharedAccount, SharedOperaion, shared_acc_user_table
 from web.tag.models import Tag
 from web.user.models import User
 
@@ -42,13 +42,13 @@ if __name__ == '__main__':
             "modification_time": None,
             "is_actual": True
             }
-    
+
     user1 = User(**test_user1)
     user2 = User(**test_user2)
     currency1 = Currency(name='Рубль', short_name='RUB', symbol='₽')
     currency2 = Currency(name='Доллар', short_name='USD', symbol='$')
-    currency3 = Currency(name='Евро', short_name='EUR', symbol='€')    
-    currency4 = Currency(name='Чешская крона', short_name='CZK', symbol='Kč')    
+    currency3 = Currency(name='Евро', short_name='EUR', symbol='€')
+    currency4 = Currency(name='Чешская крона', short_name='CZK', symbol='Kč')
 
     session.add_all([
         user1,
@@ -59,7 +59,6 @@ if __name__ == '__main__':
         currency4,
     ])
     session.commit()
-
 
     """ данные для пользователя 1
     """
@@ -79,7 +78,7 @@ if __name__ == '__main__':
         cat4,
     ])
     session.commit()
-   
+
     session.add_all([
         Category(id_user=user1.id, parent_id=cat1.id, name='ЗП'),
         Category(id_user=user1.id, parent_id=cat1.id, name='Дивиденды'),
@@ -95,7 +94,7 @@ if __name__ == '__main__':
         Tag(id_user=user1.id, name='Тег 4'),
     ])
     session.commit()
- 
+
     """ данные для пользователя 2
     """
 
@@ -120,13 +119,11 @@ if __name__ == '__main__':
     acc13 = Account(id_user=user2.id, id_currency=currency1.id, name='__виртуальный счет__, рубли')
     acc14 = Account(id_user=user2.id, id_currency=currency4.id, name='Наличные, чешские кроны')
 
-
     tag1 = Tag(id_user=user2.id, name='Вова')
     tag2 = Tag(id_user=user2.id, name='Витя')
     tag3 = Tag(id_user=user2.id, name='Ozon')
     tag4 = Tag(id_user=user2.id, name='iGooods')
     tag5 = Tag(id_user=user2.id, name='Tucson')
-
 
     session.add_all([
         acc1,
@@ -157,7 +154,6 @@ if __name__ == '__main__':
         tag5,
     ])
     session.commit()
-
 
     cat1_1 = Category(id_user=user2.id, parent_id=cat1.id, name='Приход')
     cat1_2 = Category(id_user=user2.id, parent_id=cat1.id, name='ЗП')
@@ -194,7 +190,6 @@ if __name__ == '__main__':
     cat4_2 = Category(id_user=user2.id, parent_id=cat4.id, name='Тело')
     cat4_3 = Category(id_user=user2.id, parent_id=cat4.id, name='Досрочное погашение')
     cat4_4 = Category(id_user=user2.id, parent_id=cat4.id, name='_прочее', description='Комиссии, страховки и тд')
-
 
     session.add_all([
         cat1_1,
@@ -234,7 +229,6 @@ if __name__ == '__main__':
         cat4_4,
     ])
     session.commit()
-
 
     cat3_1_1 = Category(id_user=user2.id, parent_id=cat3_1.id, name='Бензин')
     cat3_1_2 = Category(id_user=user2.id, parent_id=cat3_1.id, name='Покупка/продажа')
@@ -284,7 +278,6 @@ if __name__ == '__main__':
     cat3_101_2 = Category(id_user=user2.id, parent_id=cat3_101.id, name='Мама')
     cat3_101_3 = Category(id_user=user2.id, parent_id=cat3_101.id, name='Бабушка')
     cat3_101_4 = Category(id_user=user2.id, parent_id=cat3_101.id, name='Тетя')
-
 
     session.add_all([
         cat3_1_1,
@@ -339,13 +332,26 @@ if __name__ == '__main__':
     ])
     session.commit()
 
-
-
-
     session.add_all([
-        Operation(id_cat=cat3_5_2.id, id_account=acc1.id, name='Массаж', description='7-й сеанс', value=-1500, tags=[tag2], date=date(2019,10,17)),
-        Operation(id_cat=cat3_5_2.id, id_account=acc1.id, name='Массаж', description='8-й сеанс', value=-1500, tags=[tag2], date=date(2019,10,18)),
+        Operation(
+            id_cat=cat3_5_2.id,
+            id_account=acc1.id,
+            name='Массаж',
+            description='7-й сеанс',
+            value=-1500,
+            tags=[tag2],
+            date=date(2019, 10, 17),
+            ),
+        Operation(
+            id_cat=cat3_5_2.id,
+            id_account=acc1.id,
+            name='Массаж',
+            description='8-й сеанс',
+            value=-1500,
+            tags=[tag2],
+            date=date(2019, 10, 18),
+            ),
     ])
     session.commit()
-    
+
     session.close()
