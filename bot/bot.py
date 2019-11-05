@@ -26,18 +26,23 @@ def main():
     updater = Updater(TELEGRAM_API_KEY, request_kwargs=PROXY, use_context=True)
     dp = updater.dispatcher
     new_operation = ConversationHandler(
-        entry_points=[MessageHandler(Filters.regex('^(Добавить операцию)$'), operarion_add, pass_user_data=True)],
+        entry_points=[MessageHandler(Filters.regex('^(Добавить операцию)$'), operarion_add)],
         states={
-            "name": [MessageHandler(Filters.text, operarion_name, pass_user_data=True)],
-            "value": [MessageHandler(Filters.text, operarion_value, pass_user_data=True)],
+            "account": [MessageHandler(Filters.text, operarion_account)],
+            "category": [MessageHandler(Filters.text, operarion_category)],
+            "name": [MessageHandler(Filters.text, operarion_name)],
+            "value": [MessageHandler(Filters.text, operarion_value)],
+            "tags": [MessageHandler(Filters.text, operarion_tags)],
+            "date": [MessageHandler(Filters.text, operarion_date)],
         },
-        fallbacks=[MessageHandler(Filters.text | Filters.video | Filters.photo | Filters.document, unknown, pass_user_data=True)]
+        fallbacks=[MessageHandler(Filters.text | Filters.video | Filters.photo | Filters.document, unknown)]
     )
-
     dp.add_handler(CommandHandler('start', get_started))
     dp.add_handler(CommandHandler('categories', my_categories))
     dp.add_handler(CommandHandler('tags', my_tags))
+
     dp.add_handler(MessageHandler(Filters.regex('^(Показать последние операции)$'), my_operations))
+    dp.add_handler(new_operation)
 
     dp.add_handler(MessageHandler(Filters.command, unknown))
     dp.add_error_handler(error)

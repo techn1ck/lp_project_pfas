@@ -1,3 +1,6 @@
-PROXY = {'proxy_url': '*', 'urllib3_proxy_kwargs': {'username': 'learn', 'password': 'python'}}
-TELEGRAM_API_KEY = "*"
+from .local_settings import PROXIES, TELEGRAM_API
+
+
+PROXY = PROXIES
+TELEGRAM_API_KEY = TELEGRAM_API
 WEB_API_URL = "http://127.0.0.1:5000/api/"
