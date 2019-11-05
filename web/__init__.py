@@ -35,6 +35,7 @@ def register_blueprints(app):
     from web.shared.views import blueprint as shared_blueprint
     from web.tag.views import blueprint as tag_blueprint
     from web.user.views import blueprint as user_blueprint
+    from web.api.views import blueprint as api_blueprint
 
     app.register_blueprint(account_blueprint)
     app.register_blueprint(category_blueprint)
@@ -43,7 +44,7 @@ def register_blueprints(app):
     app.register_blueprint(shared_blueprint)
     app.register_blueprint(tag_blueprint)
     app.register_blueprint(user_blueprint)
-
+    app.register_blueprint(api_blueprint)
 
 app = create_app(Config)
 @app.teardown_appcontext
