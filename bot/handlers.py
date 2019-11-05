@@ -1,6 +1,4 @@
-import requests
-import json
-from cfg.bot_settings import WEB_API_URL
+from utils import get_keyboard
 
 
 def unknown(update, context):
@@ -8,16 +6,7 @@ def unknown(update, context):
 
 
 def get_started(update, context):
-    update.message.reply_text('Hi!')
-
-
-def my_operations(update, context):
-    r = requests.post(WEB_API_URL + "secretkey/get/operations/")
-    if r.status_code != "200":
-        result = json.loads(r.text())
-        print(result)
-    else:
-        update.message.reply_text('error')
+    update.message.reply_text('Hi!', reply_markup=get_keyboard())
 
 
 def my_categories(update, context):
