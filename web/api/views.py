@@ -57,7 +57,12 @@ def get_objects_list(secretkey, obj):
     elif obj == "tags":
         responce = get_user_tags(user_id)
     elif obj == "accounts":
-        responce == get_user_accs(user_id)
+        responce = get_user_accs(user_id)
     else:
         pass
     return json.dumps(responce, default=str, ensure_ascii=False)
+
+
+@blueprint.route('/<secretkey>/push/operation/', methods=['POST'])
+def push_operation(secretkey):
+    pass
