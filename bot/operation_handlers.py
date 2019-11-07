@@ -3,7 +3,7 @@ from datetime import datetime
 from cfg.bot_settings import WEB_API_URL
 from telegram import ReplyKeyboardRemove, InlineKeyboardButton, InlineKeyboardMarkup, ParseMode
 from telegram.ext import ConversationHandler
-from utils import get_user_accs
+from utils import get_user_accs, get_keyboard
 
 
 def my_operations(update, context):
@@ -13,7 +13,11 @@ def my_operations(update, context):
         user_text = """<b>Последние операции:</b>
 """
         for operation in result:
-            date_object = datetime.strptime(operation['creation_time'], "%Y-%m-%d %H:%M:%S.%f")
+            try:
+                date_object = datetime.strptime(operation['creation_time'], "%Y-%m-%d %H:%M:%S.%f")
+            except ValueError:
+                # при добавлении операции через форму, добавляются микросекунды, вручную - нет
+                date_object = datetime.strptime(operation['creation_time'], "%Y-%m-%d %H:%M:%S")
             operation_time = datetime.strftime(date_object, "%Y-%m-%d в %H:%M")
 
             operation_text = f"""{operation_time} - {operation['name']} - {operation['value']}
@@ -24,35 +28,46 @@ def my_operations(update, context):
         update.message.reply_text('error')
 
 
-def operarion_add(update, context):
-    update.message.reply_text("Введите название операции:", reply_markup=ReplyKeyboardRemove())
+def operation_add(update, context):
+    update.message.reply_text("Введите название операции либо /cancel для отмены", reply_markup=ReplyKeyboardRemove())
     return "account"
 
 
-def operarion_account(update, context):
+def operation_account(update, context):
+    context.user_data['current_operation'] = {"name": str(update.message.text)}
+
     reply_markup = get_user_accs("secretkey")
     update.message.reply_text("Выберите счет:", reply_markup=reply_markup)
+
+
+def operation_account_button(update, context):
+    query = update.callback_query
+    # print(query)
+    context.user_data['current_operation']['account_id'] = int(query.data)
+    query.edit_message_text(text="Выбран счет: {}".format(query.data))
+    update.message.reply_text("Категория")
     return "category"
 
 
-def operarion_category(update, context):
-    query = update.callback_query
-    query.edit_message_text(text="Selected option: {}".format(query.data))
-    update.message.reply_text("Категория")
+def operation_category(update, context):
+    print("category")
+
     return "name"
 
 
-def operarion_name(update, context):
+def operation_name(update, context):
     return "value"
 
 
-def operarion_value(update, context):
+def operation_value(update, context):
     return ConversationHandler.END
 
 
-def operation_button(update, context):
-    query = update.callback_query
-    query.edit_message_text(text="Выбран счет: {}".format(query.data))
+def operation_cancel(update, context):
+    update.message.reply_text("Ввод отменен", reply_markup=get_keyboard())
+    return ConversationHandler.END
+
+
 
 # def operarion_tags(update, context):
 #     pass
