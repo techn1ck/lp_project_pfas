@@ -11,7 +11,7 @@ def get_keyboard():
     return my_keyboard
 
 
-def get_user_accs(secretkey):
+def get_user_accs_keyboard(secretkey):
     """
     Принимает секретный ключ
     Возвращает inline клавиатуру со списком счетов пользователя
@@ -26,6 +26,26 @@ def get_user_accs(secretkey):
         return InlineKeyboardMarkup(keyboard)
     else:
         return "error"
+
+
+def get_user_default_acc(secretkey):
+    r = requests.post(WEB_API_URL + secretkey + "/get/accounts/")
+    if r.status_code == 200:
+        result = r.json()
+        # пока что выбираем просто первый из списка, в будущем можно сделать, чтобы счет по-умолчанию всегда выдавался первым, либо в api добавить такую функцию, чтобы каждый раз не гонять весь список
+        default_account = result[0]
+        return default_account
+    else:
+        return
+
+
+def get_user_accs_list(secretkey):
+    r = requests.post(WEB_API_URL + secretkey + "/get/accounts/")
+    if r.status_code == 200:
+        result = r.json()
+        return result
+    else:
+        return
 
 
 def get_user_categories(secretkey):

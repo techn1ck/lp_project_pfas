@@ -11,7 +11,7 @@ from telegram.utils.helpers import mention_html
 
 from cfg.bot_settings import TELEGRAM_API_KEY, PROXY
 from bot.handlers import get_started, my_categories, my_tags, unknown
-from bot.operation_handlers import my_operations, operation_add, operation_name, operation_value, operation_account, operation_category, operation_account_button, operation_cancel
+from bot.operation_handlers import my_operations, operation_add, operation_name, operation_value, operation_category, operation_account_button, operation_cancel, operation_default_account, operation_custom_account
 
 locale.setlocale(locale.LC_ALL, "russian")
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -68,10 +68,12 @@ def main():
     new_operation = ConversationHandler(
         entry_points=[MessageHandler(Filters.regex('^(Добавить операцию)$'), operation_add)],
         states={
-            "account": [MessageHandler(Filters.text, operation_account),
-                        CallbackQueryHandler(operation_account_button)],
-            "category": [MessageHandler(Filters.text, operation_category)],
             "name": [MessageHandler(Filters.text, operation_name)],
+            "default_account": [MessageHandler(Filters.text, operation_default_account),
+                                CommandHandler('change_account', operation_custom_account),
+                                CallbackQueryHandler(operation_account_button)],
+            "category": [MessageHandler(Filters.text, operation_category)],
+            "value": [MessageHandler(Filters.text, operation_value)],
             # "tags": [MessageHandler(Filters.text, operation_tags)],
             # "date": [MessageHandler(Filters.text, operation_date)],
         },

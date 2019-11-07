@@ -3,7 +3,7 @@ from datetime import datetime
 from cfg.bot_settings import WEB_API_URL
 from telegram import ReplyKeyboardRemove, InlineKeyboardButton, InlineKeyboardMarkup, ParseMode
 from telegram.ext import ConversationHandler
-from utils import get_user_accs, get_keyboard
+from utils import get_keyboard, get_user_default_acc
 
 
 def my_operations(update, context):
@@ -30,22 +30,29 @@ def my_operations(update, context):
 
 def operation_add(update, context):
     update.message.reply_text("Введите название операции либо /cancel для отмены", reply_markup=ReplyKeyboardRemove())
-    return "account"
+    return "name"
 
 
-def operation_account(update, context):
+def operation_name(update, context):
     context.user_data['current_operation'] = {"name": str(update.message.text)}
+    return "value"
 
-    reply_markup = get_user_accs("secretkey")
-    update.message.reply_text("Выберите счет:", reply_markup=reply_markup)
 
+def operation_default_account(update, context):
+    default_account = get_user_default_acc("secretkey")
+    print(default_account)
+    update.message.reply_text(f"Выбран счет по умолчанию: {default_account[1]}, нажмите /change_account, если хотите его изменить")
+    context.user_data['current_operation']['account_id'] = int(default_account[0])
+    return "category"
+
+def operation_custom_account(update, context):
+    update.message.reply_text("Выберите счет из списка:")
 
 def operation_account_button(update, context):
     query = update.callback_query
     # print(query)
     context.user_data['current_operation']['account_id'] = int(query.data)
     query.edit_message_text(text="Выбран счет: {}".format(query.data))
-    update.message.reply_text("Категория")
     return "category"
 
 
@@ -77,13 +84,17 @@ def operation_cancel(update, context):
 #     pass
 
 """
+Вводим название операции
 
 Получить список счетов
-Вывести в виде инлайн клавиатуры
+Написать сообщение, что выбран счет № и его название
+ + нажмите /change_account, если пользователь хочет поменять счет, выводим список счетов и выбираем из него
 Выбрать счет
 
 Получить список категорий
-Вывести в виде инлайн клавиатуры
+Попросить пользователя ввести название категории
+    Если такая категория существует - продолжаем
+    Если нет, выводим подсказку со списком доступных категорий
 Выбрать категорию
 
 Спрашивает имя операции
