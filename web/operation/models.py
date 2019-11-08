@@ -46,6 +46,7 @@ class Operation(Base):
         self.value = value
         self.tags = tags
         self.is_actual = True
+        self.creation_type = creation_type
         if date:
             self.creation_time = date
         else:

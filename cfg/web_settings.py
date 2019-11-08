@@ -14,5 +14,4 @@ class TestConfig:
     SQLALCHEMY_DATABASE_URI = TEST_DB_URI
     WTF_CSRF_ENABLED = False
     TESTING = True
-    # BASEDIR = os.path.abspath(os.path.dirname(__file__))  # зачем эта строка? без нее все работает
     SECRET_KEY = 'test'
