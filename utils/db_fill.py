@@ -332,24 +332,138 @@ if __name__ == '__main__':
     ])
     session.commit()
 
+    today = date.today()
+
+    # ЗП
+    session.add_all([
+        Operation(
+            id_cat=cat1_2.id,
+            id_account=acc5.id,
+            name='ЗП',
+            description='',
+            value=7500,
+            tags=[],
+            date=date(today.year, today.month, 1),
+            ),
+        Operation(
+            id_cat=cat1_2.id,
+            id_account=acc5.id,
+            name='ЗП',
+            description='аванс',
+            value=10000,
+            tags=[],
+            date=date(today.year, today.month, 16),
+            ),
+    ])
+    session.commit()
+
+
+
+    # массаж
     session.add_all([
         Operation(
             id_cat=cat3_5_2.id,
             id_account=acc1.id,
             name='Массаж',
-            description='7-й сеанс',
+            description='1-й сеанс',
             value=-1500,
             tags=[tag2],
-            date=date(2019, 10, 17),
+            date=date(today.year, today.month-1, 27),
             ),
         Operation(
             id_cat=cat3_5_2.id,
             id_account=acc1.id,
             name='Массаж',
-            description='8-й сеанс',
+            description='2-й сеанс',
             value=-1500,
             tags=[tag2],
-            date=date(2019, 10, 18),
+            date=date(today.year, today.month, 3),
+            ),
+        Operation(
+            id_cat=cat3_5_2.id,
+            id_account=acc1.id,
+            name='Массаж',
+            description='3-й сеанс',
+            value=-1500,
+            tags=[tag2],
+            date=date(today.year, today.month, 4),
+            ),
+        Operation(
+            id_cat=cat3_5_2.id,
+            id_account=acc1.id,
+            name='Массаж',
+            description='4-й сеанс',
+            value=-1500,
+            tags=[tag2],
+            date=date(today.year, today.month, 6),
+            ),
+        Operation(
+            id_cat=cat3_5_2.id,
+            id_account=acc1.id,
+            name='Массаж',
+            description='5-й сеанс',
+            value=-1500,
+            tags=[tag2],
+            date=date(today.year, today.month, 10),
+            ),
+        Operation(
+            id_cat=cat3_5_2.id,
+            id_account=acc1.id,
+            name='Массаж',
+            description='6-й сеанс',
+            value=-1500,
+            tags=[tag2],
+            date=date(today.year, today.month, 13),
+            ),
+    ])
+    session.commit()
+
+    # продукты
+    session.add_all([
+        Operation(
+            id_cat=cat3_4_1.id,
+            id_account=acc5.id,
+            name='Продукты',
+            description='',
+            value=-3520,
+            tags=[],
+            date=date(today.year, today.month, 1),
+            ),
+        Operation(
+            id_cat=cat3_4_1.id,
+            id_account=acc5.id,
+            name='Овощи/фрукты',
+            description='',
+            value=-3520,
+            tags=[],
+            date=date(today.year, today.month, 2),
+            ),
+        Operation(
+            id_cat=cat3_4_1.id,
+            id_account=acc5.id,
+            name='Продукты',
+            description='',
+            value=-3520,
+            tags=[],
+            date=date(today.year, today.month, 9),
+            ),
+        Operation(
+            id_cat=cat3_4_1.id,
+            id_account=acc5.id,
+            name='Продукты',
+            description='',
+            value=-3520,
+            tags=[],
+            date=date(today.year, today.month, 15),
+            ),
+        Operation(
+            id_cat=cat3_4_1.id,
+            id_account=acc5.id,
+            name='Продукты',
+            description='',
+            value=-3520,
+            tags=[],
+            date=date(today.year, today.month, 24),
             ),
     ])
     session.commit()

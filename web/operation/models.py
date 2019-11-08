@@ -38,18 +38,7 @@ class Operation(Base):
     modification_time = Column(DateTime, default=None)
     is_actual = Column(Boolean, default=True)
 
-    def form_processing(self, form, tags_objects_list, id_operation=None):
-        self.id_cat = form.category.data
-        self.id_account = form.account.data
-        self.name = form.name.data
-        self.description = form.description.data
-        self.value = form.value.data
-        if tags_objects_list:
-            self.tags = tags_objects_list
-        if id_operation:
-            self.modification_time = datetime.now()
-
-    def __init__(self, id_cat=0, id_account=0, name='', description='', value=0, tags=[], date='', creation_type='web'):
+    def __init__(self, id_cat=0, id_account=0, name='', description='', value=0, tags=[], date=''):
         self.id_cat = id_cat
         self.id_account = id_account
         self.name = name
@@ -63,6 +52,18 @@ class Operation(Base):
         else:
             self.creation_time = datetime.now()
         self.modification_time = None
+
+    def form_processing(self, form, tags_objects_list, id_operation=None):
+        self.id_cat = form.id_cat.data
+        self.id_account = form.id_account.data
+        self.name = form.name.data
+        self.description = form.description.data
+        self.value = form.value.data
+        self.creation_time = form.creation_time.data
+        if tags_objects_list:
+            self.tags = tags_objects_list
+        if id_operation:
+            self.modification_time = datetime.now()
 
     def __repr__(self):
         return f'<Operation: {self.id}, {self.name}>'

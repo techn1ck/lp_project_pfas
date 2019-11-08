@@ -9,6 +9,16 @@
     {{ wtf.quick_form(form, extra_classes="monospace") }}
 </div>
 <div class="col-md-8">
+    <div class="well">
+        <form action="" method="post" name="login">
+            {{filter_form.hidden_tag()}}
+            <div>{{ filter_form.date_from.label }}: {{ filter_form.date_from() }}</div>
+            <div>{{ filter_form.date_to.label }}: {{ filter_form.date_to() }}</div>
+            <div>{{ filter_form.filter_id_account.label }}: {{ filter_form.filter_id_account() }}</div>
+            <div>{{ filter_form.filter_id_cat.label }}: {{ filter_form.filter_id_cat(class="monospace") }}</div>
+            <div>{{ filter_form.filter() }}</div>       
+        </form>
+    </div>
     <table class="table table-bordered">
         <thead>
             <tr>
@@ -19,13 +29,14 @@
                 <th>Название</th>
                 <th>Описание</th>
                 <th>Сумма</th>
+                <th>Дата</th>
             </tr>
         </thead>
         <tbody>
             {% if operations is iterable %}
                 {% for operation in operations %}
                     <tr>
-                        <th>{{ operation.id }}</th>
+                        <td>{{ operation.id }}</td>
                         <td>{{ operation.id_account }}</td>
                         <td>{{ operation.id_cat }}</td>
                         <td>
@@ -36,8 +47,9 @@
                         <td>{{ operation.name }}</td>
                         <td>{{ operation.description }}</td>
                         <td>{{ operation.value }}</td>
+                        <td>{{ operation.creation_time.strftime('%Y-%m-%d') }}</td>
                         <td>
-                            <a href="?action=update&id={{ operation.id }}"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></a>
+                            <a href="?id={{ operation.id }}"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></a>
                             
                             <a onclick="return confirm('Удалить?')" href="?action=delete&id={{ operation.id }}"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>
                         </td>
@@ -45,10 +57,20 @@
                 {% endfor %}
             {% else %}
                 <tr>
-                    <td colspan="7">У вас нет операций</td>
+                    <td colspan="8">У вас нет операций за указанный период</td>
                 </tr>
             {% endif %}
         </tbody>
+        {% if operations is iterable %}
+        <tfoot>
+            <tr>
+                <td colspan=9>
+                    Всего операций: {{ operations|count }}<br /> 
+                    Общая сумма операций: {{ operations|sum(attribute="value") }}
+                </td>
+            </tr>
+        </tfoot>
+        {% endif %}
     </table>
 </div>
 {% endblock %}
