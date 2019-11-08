@@ -38,7 +38,7 @@ class Operation(Base):
     modification_time = Column(DateTime, default=None)
     is_actual = Column(Boolean, default=True)
 
-    def __init__(self, id_cat=0, id_account=0, name='', description='', value=0, tags=[], date=''):
+    def __init__(self, id_cat=0, id_account=0, name='', description='', value=0, tags=[], date='', creation_type='web'):
         self.id_cat = id_cat
         self.id_account = id_account
         self.name = name
