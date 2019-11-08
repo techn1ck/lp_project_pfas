@@ -3,7 +3,7 @@ from datetime import datetime
 from cfg.bot_settings import WEB_API_URL
 from telegram import ReplyKeyboardRemove, InlineKeyboardButton, InlineKeyboardMarkup, ParseMode
 from telegram.ext import ConversationHandler
-from utils import get_keyboard, get_user_default_acc
+from utils import get_keyboard, get_user_default_acc, get_categories_list
 
 
 def my_operations(update, context):
@@ -30,23 +30,30 @@ def my_operations(update, context):
 
 def operation_add(update, context):
     update.message.reply_text("Введите название операции либо /cancel для отмены", reply_markup=ReplyKeyboardRemove())
-    return "name"
+    return "default_account"
 
 
 def operation_name(update, context):
-    context.user_data['current_operation'] = {"name": str(update.message.text)}
-    return "value"
+    # context.user_data['current_operation'] = {"name": str(update.message.text)}
+    # update.message.reply_text("Выбор счета")
+    # return "default_account"
+    pass
 
 
 def operation_default_account(update, context):
+    # получаем имя операции
+    context.user_data['current_operation'] = {"name": str(update.message.text)}
+
     default_account = get_user_default_acc("secretkey")
-    print(default_account)
-    update.message.reply_text(f"Выбран счет по умолчанию: {default_account[1]}, нажмите /change_account, если хотите его изменить")
+    update.message.reply_text(f"""Выбран счет по умолчанию: {default_account[1]}
+Введите категорию операции, чтобы продолжить""")
     context.user_data['current_operation']['account_id'] = int(default_account[0])
     return "category"
 
+
 def operation_custom_account(update, context):
     update.message.reply_text("Выберите счет из списка:")
+
 
 def operation_account_button(update, context):
     query = update.callback_query
@@ -57,16 +64,26 @@ def operation_account_button(update, context):
 
 
 def operation_category(update, context):
-    print("category")
-
-    return "name"
-
-
-def operation_name(update, context):
-    return "value"
+    user_category = str(update.message.text)
+    category_list = get_categories_list("secretkey")
+    for category in category_list:
+        if str(category[1]).lower() == user_category.lower():
+            context.user_data['current_operation']['category_id'] = int(category[0])
+            update.message.reply_text(f"Выбрана категория {category[1]}, введите сумму операции")
+            return "value"
+    update.message.reply_text("Категория не найдена, попробуйте еще раз")
+    return "category"
 
 
 def operation_value(update, context):
+    try:
+        operation_value = int(update.message.text)
+        context.user_data['current_operation']['value'] = operation_value
+        print(context.user_data)
+    except ValueError:
+        update.message.reply_text("Сумма введена неверно, нужно ввести только число")
+        return "value"
+    update.message.reply_text("Операция успешно добавлена", reply_markup=get_keyboard())
     return ConversationHandler.END
 
 
@@ -97,12 +114,8 @@ def operation_cancel(update, context):
     Если нет, выводим подсказку со списком доступных категорий
 Выбрать категорию
 
-Спрашивает имя операции
 Спрашивает сумму
 
-Теги?
 
-Дата
-	Ввести дату (инлайн клавиатура) если отличается от текущей (пока не делаю)
 
 """

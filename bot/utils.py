@@ -48,14 +48,18 @@ def get_user_accs_list(secretkey):
         return
 
 
-def get_user_categories(secretkey):
-    r = requests.post(WEB_API_URL + secretkey + "/get/category/")
+def get_categories_list(secretkey):
+    r = requests.post(WEB_API_URL + secretkey + "/get/categories/")
     if r.status_code == 200:
         result = r.json()
-        keyboard = []
-        for account in result:
-            account_button = [InlineKeyboardButton(account[1], callback_data=account[0])]
-            keyboard.append(account_button)
-        return InlineKeyboardMarkup(keyboard)
+        return result
     else:
-        return "error"
+        return
+
+
+def push_operation(secretkey, operation):
+    """
+    Принимает словарь вида:
+    {'current_operation': {'name': 'Еда', 'account_id': 4, 'category_id': 64, 'value': -1000}}
+    """
+    pass

@@ -33,6 +33,7 @@ get_user_status(username, secretkey):"
 
 """
 
+
 @blueprint.route('/<secretkey>/get/<obj>/', methods=['GET', 'POST'])
 def get_objects_list(secretkey, obj):
     '''
