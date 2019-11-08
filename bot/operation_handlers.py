@@ -3,7 +3,7 @@ from datetime import datetime
 from cfg.bot_settings import WEB_API_URL
 from telegram import ReplyKeyboardRemove, InlineKeyboardButton, InlineKeyboardMarkup, ParseMode
 from telegram.ext import ConversationHandler
-from utils import get_keyboard, get_user_default_acc, get_categories_list
+from utils import get_keyboard, get_user_default_acc, get_categories_list, push_operation
 
 
 def my_operations(update, context):
@@ -33,13 +33,6 @@ def operation_add(update, context):
     return "default_account"
 
 
-def operation_name(update, context):
-    # context.user_data['current_operation'] = {"name": str(update.message.text)}
-    # update.message.reply_text("Выбор счета")
-    # return "default_account"
-    pass
-
-
 def operation_default_account(update, context):
     # получаем имя операции
     context.user_data['current_operation'] = {"name": str(update.message.text)}
@@ -47,19 +40,7 @@ def operation_default_account(update, context):
     default_account = get_user_default_acc("secretkey")
     update.message.reply_text(f"""Выбран счет по умолчанию: {default_account[1]}
 Введите категорию операции, чтобы продолжить""")
-    context.user_data['current_operation']['account_id'] = int(default_account[0])
-    return "category"
-
-
-def operation_custom_account(update, context):
-    update.message.reply_text("Выберите счет из списка:")
-
-
-def operation_account_button(update, context):
-    query = update.callback_query
-    # print(query)
-    context.user_data['current_operation']['account_id'] = int(query.data)
-    query.edit_message_text(text="Выбран счет: {}".format(query.data))
+    context.user_data['current_operation']['id_account'] = int(default_account[0])
     return "category"
 
 
@@ -68,7 +49,7 @@ def operation_category(update, context):
     category_list = get_categories_list("secretkey")
     for category in category_list:
         if str(category[1]).lower() == user_category.lower():
-            context.user_data['current_operation']['category_id'] = int(category[0])
+            context.user_data['current_operation']['id_cat'] = int(category[0])
             update.message.reply_text(f"Выбрана категория {category[1]}, введите сумму операции")
             return "value"
     update.message.reply_text("Категория не найдена, попробуйте еще раз")
@@ -79,11 +60,14 @@ def operation_value(update, context):
     try:
         operation_value = int(update.message.text)
         context.user_data['current_operation']['value'] = operation_value
-        print(context.user_data)
     except ValueError:
         update.message.reply_text("Сумма введена неверно, нужно ввести только число")
         return "value"
-    update.message.reply_text("Операция успешно добавлена", reply_markup=get_keyboard())
+    result = push_operation("secretkey", context.user_data['current_operation'])
+    if result:
+        update.message.reply_text("Операция успешно добавлена", reply_markup=get_keyboard())
+    else:
+        update.message.reply_text("Ошибка добавления операции", reply_markup=get_keyboard())
     return ConversationHandler.END
 
 
@@ -99,23 +83,3 @@ def operation_cancel(update, context):
 
 # def operarion_date(update, context):
 #     pass
-
-"""
-Вводим название операции
-
-Получить список счетов
-Написать сообщение, что выбран счет № и его название
- + нажмите /change_account, если пользователь хочет поменять счет, выводим список счетов и выбираем из него
-Выбрать счет
-
-Получить список категорий
-Попросить пользователя ввести название категории
-    Если такая категория существует - продолжаем
-    Если нет, выводим подсказку со списком доступных категорий
-Выбрать категорию
-
-Спрашивает сумму
-
-
-
-"""

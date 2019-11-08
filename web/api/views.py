@@ -1,8 +1,7 @@
 import json
-from decimal import Decimal
 from flask import Blueprint, request, jsonify
 from web.db import session
-from werkzeug.routing import BaseConverter
+from werkzeug.http import HTTP_STATUS_CODES
 
 from web.user.models import User
 from web.operation.models import Operation
@@ -34,10 +33,10 @@ get_user_status(username, secretkey):"
 """
 
 
-@blueprint.route('/<secretkey>/get/<obj>/', methods=['GET', 'POST'])
+@blueprint.route('/<secretkey>/get/<obj>/', methods=['POST'])
 def get_objects_list(secretkey, obj):
     '''
-    возможно в параметрах нужно еще передавать кол-во объектов, сейчас я по-умолчанию поставил 5 последних
+    возможно в параметрах нужно еще передавать кол-во объектов, сейчас я по-умолчанию поставил 5 последних для операций
 
     здесь проверка валидности секретного ключа и получение id нужного пользователя
     с помощью функции get_user_status
@@ -60,10 +59,30 @@ def get_objects_list(secretkey, obj):
     elif obj == "accounts":
         responce = get_user_accs(user_id)
     else:
-        pass
+        return bad_request("error")
     return json.dumps(responce, default=str, ensure_ascii=False)
 
 
 @blueprint.route('/<secretkey>/push/operation/', methods=['POST'])
 def push_operation(secretkey):
-    pass
+    # проверка, что это нужный нам пользователь
+    new_operation = dict(request.form) or {}
+    if 'name' not in new_operation or 'id_account' not in new_operation or 'id_cat' not in new_operation or 'value' not in new_operation:
+        return bad_request('not enough fields')
+    operation = Operation(**new_operation)
+    session.add(operation)
+    session.commit()
+    return "ok"
+
+
+def error_response(status_code, message=None):
+    payload = {'error': HTTP_STATUS_CODES.get(status_code, 'Unknown error')}
+    if message:
+        payload['message'] = message
+    response = jsonify(payload)
+    response.status_code = status_code
+    return response
+
+
+def bad_request(message):
+    return error_response(400, message)

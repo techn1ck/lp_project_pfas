@@ -49,7 +49,7 @@ class Operation(Base):
         if id_operation:
             self.modification_time = datetime.now()
 
-    def __init__(self, id_cat=0, id_account=0, name='', description='', value=0, tags=[], date=''):
+    def __init__(self, id_cat=0, id_account=0, name='', description='', value=0, tags=[], date='', creation_type='web'):
         self.id_cat = id_cat
         self.id_account = id_account
         self.name = name
@@ -57,6 +57,7 @@ class Operation(Base):
         self.value = value
         self.tags = tags
         self.is_actual = True
+        self.creation_type = creation_type
         if date:
             self.creation_time = date
         else:

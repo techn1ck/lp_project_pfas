@@ -60,6 +60,9 @@ def get_categories_list(secretkey):
 def push_operation(secretkey, operation):
     """
     Принимает словарь вида:
-    {'current_operation': {'name': 'Еда', 'account_id': 4, 'category_id': 64, 'value': -1000}}
+    {'name': 'Еда', 'id_account': 4, 'id_cat': 64, 'value': -1000}
     """
-    pass
+    operation['creation_type'] = 'bot'
+    responce = requests.post(WEB_API_URL + secretkey + "/push/operation/", data=operation)
+    if responce.status_code == 200:
+        return True
