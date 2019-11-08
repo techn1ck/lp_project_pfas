@@ -13,7 +13,7 @@ from cfg.bot_settings import TELEGRAM_API_KEY, PROXY
 from bot.handlers import get_started, my_categories, my_tags, unknown
 from bot.operation_handlers import my_operations, operation_add, operation_value, operation_category, operation_cancel, operation_default_account
 
-locale.setlocale(locale.LC_ALL, "russian")
+locale.setlocale(locale.LC_ALL, "ru_RU")
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                     level=logging.INFO,
                     filename='bot.log'

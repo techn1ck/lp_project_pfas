@@ -21,6 +21,13 @@ def get_user_accs(id_user, not_selected_choise=False):
 
 
 def get_user_categories(id_user):  # добавить вывод в виде дерева
+    result = session.query(Category.id, Category.name).filter(Category.id_user == id_user).all()
+    if result:
+        return [(category.id, category.name) for category in result]
+    return []
+
+
+def get_user_categories_tree(id_user):  # добавить вывод в виде дерева
     categories = session.query(Category).filter(Category.id_user == id_user).order_by('id').all()
     tree = Tree(categories)
     return tree.return_choises()

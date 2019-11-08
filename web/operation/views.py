@@ -11,7 +11,7 @@ from web.obj_history.db_history import save_original_state, get_obj_history, get
 from web.operation.models import Operation
 from web.future_operation.models import FutureOperaion  # без импорта не дает сохранить операцию
 
-from .helpers import get_user_accs, get_user_categories, get_user_tags, get_user_operations, get_tags_objects
+from .helpers import get_user_accs, get_user_categories, get_user_categories_tree, get_user_tags, get_user_operations, get_tags_objects
 
 
 blueprint = Blueprint('operation', __name__, url_prefix='/operation')
@@ -36,7 +36,7 @@ def operations():
     form = OperationForm(obj=operation)
     form.id_account.choices = get_user_accs(id_user)
     form.tags.choices = get_user_tags(id_user)
-    form.id_cat.choices = get_user_categories(id_user)
+    form.id_cat.choices = get_user_categories_tree(id_user)
 
     if form.submit.data and form.validate_on_submit():
         save_operation(operation, form, id_operation, id_user)
@@ -78,7 +78,7 @@ def get_operation_filter_form(id_user, date_from, date_to):
         date_to.strftime(filter_form.date_to.format)
         )
     filter_form.filter_id_account.choices = get_user_accs(id_user, not_selected_choise=True)
-    filter_form.filter_id_cat.choices = get_user_categories(id_user)
+    filter_form.filter_id_cat.choices = get_user_categories_tree(id_user)
     return filter_form
 
 
