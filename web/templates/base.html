@@ -4,9 +4,9 @@
 {% block title %} Personal Finance Account System {% endblock %}
 {% block styles %}
     {{super()}}
-    <link rel="stylesheet" type="text/css"
-          href="{{url_for('static', filename='style.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='style.css')}}">
 {% endblock %}
+
 
 
 {% block navbar %}
@@ -15,8 +15,11 @@
             <a href="/" class="navbar-brand">[ PFAS ]</a>
             {% if current_user.is_authenticated %}
             <ul class="nav navbar-nav">
+                <!--li><a href="{{ url_for('shared.shared_ops') }}">Совместные операции</a></li-->
+                <li><a href="{{ url_for('account.account_list') }}">Счета</a></li>
+                <li><a href="{{ url_for('category.categories_list') }}">Категории</a></li>
+                <li><a href="{{ url_for('tag.tag_list') }}">Теги</a></li>
                 <li><a href="{{ url_for('operation.operations') }}">Операции</a></li>
-                <li><a href="{{ url_for('shared.shared_ops') }}">Совместные операции</a></li>
                 <li><a href="{{ url_for('report.reports') }}">Отчеты</a></li>
             </ul>
             {% endif %}
@@ -25,9 +28,6 @@
                     <li class="dropdown">
                         <a class="dropdown-toggle" data-toggle="dropdown" role="button" href="#">{{ current_user.name }}</a>
                         <ul class="dropdown-menu">
-                            <li><a href="{{ url_for('account.account_list') }}">Счета</a></li>
-                            <li><a href="{{ url_for('category.categories_list') }}">Категории</a></li>
-                            <li><a href="{{ url_for('tag.tag_list') }}">Теги</a></li>
                             <li><a href="{{ url_for('user.user_settings') }}">Настройки</a></li>
                             <li role="separator" class="divider"></li>
                             <li><a href="{{ url_for('user.logout') }}">Выход</a></li>

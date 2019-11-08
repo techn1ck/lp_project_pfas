@@ -1,22 +1,29 @@
+from flask import flash
+
 from web.db import session
 from web.account.models import Account
 from web.category.models import Category
 from web.operation.models import Operation
 from web.tag.models import Tag
+from web.tree import Tree
 
 
-def get_user_accs(id_user):
+def get_user_accs(id_user, not_selected_choise=False):
+    out = []
+    if not_selected_choise:
+        out.append(('', " - НЕТ - "))
+        out.append(('', ''))
     result = session.query(Account.id, Account.name).filter(Account.id_user == id_user).all()
     if result:
-        return [(account.id, account.name) for account in result]
-    return []  # wtfforms чтобы отрисовать форму требует список, даже если он пустой
+        for account in result:
+            out.append((account.id, account.name))
+    return out
 
 
 def get_user_categories(id_user):  # добавить вывод в виде дерева
-    result = session.query(Category.id, Category.name).filter(Category.id_user == id_user).all()
-    if result:
-        return [(category.id, category.name) for category in result]
-    return []
+    categories = session.query(Category).filter(Category.id_user == id_user).order_by('id').all()
+    tree = Tree(categories)
+    return tree.return_choises()
 
 
 def get_user_tags(id_user):
@@ -35,17 +42,28 @@ def get_operation_tags_id(operation_id):
     return tags_id
 
 
-def get_user_operations(id_user):
+def get_user_operations(id_user, date_from=None, date_to=None, id_account=0, id_cat=0):
+#    user_accounts = session.query(Account).filter(Account.id_user == id_user, Account.is_actual == True).all()
     user_accounts = get_user_accs(id_user)
     if not user_accounts:
         return
+
     user_accounts_id = []  # как это написать в одну строку?
     user_accounts_id = [account[0] for account in user_accounts]
     # В данный момент, вместо названий операций и категорий выводятся id,
     # возможно ли с помощью sql запроса сразу выдирать названия или лучше использовать другой способ?
-    operations = session.query(Operation).\
-        filter(Operation.id_account.in_(user_accounts_id)).\
-        order_by(Operation.creation_time.desc()).all()
+    query = session.query(Operation)
+    query = query.filter(Operation.creation_time >= date_from, Operation.creation_time <= date_to)
+    if id_account:
+        query = query.filter(Operation.id_account == id_account)
+    else:
+        query = query.filter(Operation.id_account.in_(user_accounts_id))
+        
+    if id_cat:
+        query = query.filter(Operation.id_cat == id_cat)
+    query = query.order_by(Operation.creation_time.desc())
+    operations = query.all()
+
     if operations:
         return operations
 

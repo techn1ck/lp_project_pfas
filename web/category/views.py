@@ -85,7 +85,6 @@ def save_category(category, form, id_cat):
         save_original_state('Category', category.id, 'update', category)
     if not form.parent_id.data:
         form.parent_id.data = None
-    print(form)
     category.add_form_data(form)
     session.add(category)
     session.commit()
