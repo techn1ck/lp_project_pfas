@@ -8,7 +8,7 @@ from web.operation.models import Operation
 from web.category.models import Category
 from web.tag.models import Tag
 
-from web.operation.helpers import get_user_operations, get_user_accs, get_operation_tags_names, get_user_categories, get_user_tags
+from web.operation.helpers import get_user_accs_api, get_user_operations_api, get_operation_tags_names, get_user_categories, get_user_tags
 
 blueprint = Blueprint('api', __name__, url_prefix='/api')
 
@@ -45,7 +45,7 @@ def get_objects_list(secretkey, obj):
     obj_count = 5
     responce = []
     if obj == "operations":
-        operations = get_user_operations(user_id)
+        operations = get_user_operations_api(user_id)
         for operation in operations[0:obj_count]:
             # подумать какие поля от операции нужно передавать в телеграм
             dict_operation = dict(operation.__dict__)
@@ -57,7 +57,7 @@ def get_objects_list(secretkey, obj):
     elif obj == "tags":
         responce = get_user_tags(user_id)
     elif obj == "accounts":
-        responce = get_user_accs(user_id)
+        responce = get_user_accs_api(user_id)
     else:
         return bad_request("error")
     return json.dumps(responce, default=str, ensure_ascii=False)

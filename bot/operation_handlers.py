@@ -9,7 +9,7 @@ from utils import get_keyboard, get_user_default_acc, get_categories_list, push_
 def my_operations(update, context):
     r = requests.post(WEB_API_URL + "secretkey/get/operations/")
     if r.status_code == 200:
-        result = r.json()
+        result = r.json(encoding="utf-8")
         user_text = """<b>Последние операции:</b>
 """
         for operation in result:

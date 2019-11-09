@@ -1,6 +1,7 @@
-from .local_settings import PROXIES, TELEGRAM_API
+from .local_settings import PROXIES, TELEGRAM_API, MY_LOCALE
 
 
 PROXY = PROXIES
 TELEGRAM_API_KEY = TELEGRAM_API
 WEB_API_URL = "http://127.0.0.1:5000/api/"
+LOCALE = MY_LOCALE

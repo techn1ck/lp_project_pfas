@@ -27,7 +27,7 @@ def get_user_categories(id_user):  # добавить вывод в виде д�
     return []
 
 
-def get_user_categories_tree(id_user):  # добавить вывод в виде дерева
+def get_user_categories_tree(id_user):
     categories = session.query(Category).filter(Category.id_user == id_user).order_by('id').all()
     tree = Tree(categories)
     return tree.return_choises()
@@ -54,7 +54,6 @@ def get_user_operations(id_user, date_from=None, date_to=None, id_account=0, id_
     user_accounts = get_user_accs(id_user)
     if not user_accounts:
         return
-
     user_accounts_id = []  # как это написать в одну строку?
     user_accounts_id = [account[0] for account in user_accounts]
     # В данный момент, вместо названий операций и категорий выводятся id,
@@ -65,7 +64,6 @@ def get_user_operations(id_user, date_from=None, date_to=None, id_account=0, id_
         query = query.filter(Operation.id_account == id_account)
     else:
         query = query.filter(Operation.id_account.in_(user_accounts_id))
-        
     if id_cat:
         query = query.filter(Operation.id_cat == id_cat)
     query = query.order_by(Operation.creation_time.desc())
@@ -98,3 +96,25 @@ def get_operation_tags_names(operation_id):
         for tag in result.tags:
             tags_names.append(tag.name)
     return tags_names
+
+
+def get_user_accs_api(id_user):
+    result = session.query(Account.id, Account.name).filter(Account.id_user == id_user).all()
+    if result:
+        return [(account.id, account.name) for account in result]
+    return
+
+
+def get_user_operations_api(id_user):
+    user_accounts = get_user_accs(id_user)
+    if not user_accounts:
+        return
+    user_accounts_id = []  # как это написать в одну строку?
+    user_accounts_id = [account[0] for account in user_accounts]
+    # В данный момент, вместо названий операций и категорий выводятся id,
+    # возможно ли с помощью sql запроса сразу выдирать названия или лучше использовать другой способ?
+    operations = session.query(Operation).\
+        filter(Operation.id_account.in_(user_accounts_id)).\
+        order_by(Operation.creation_time.desc()).all()
+    if operations:
+        return operations

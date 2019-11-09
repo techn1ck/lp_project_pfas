@@ -9,11 +9,11 @@ from telegram import ParseMode
 from telegram.ext import Updater, CommandHandler, ConversationHandler, MessageHandler, Filters, CallbackQueryHandler
 from telegram.utils.helpers import mention_html
 
-from cfg.bot_settings import TELEGRAM_API_KEY, PROXY
+from cfg.bot_settings import TELEGRAM_API_KEY, PROXY, LOCALE
 from bot.handlers import get_started, my_categories, my_tags, unknown
 from bot.operation_handlers import my_operations, operation_add, operation_value, operation_category, operation_cancel, operation_default_account
 
-locale.setlocale(locale.LC_ALL, "ru_RU")
+locale.setlocale(locale.LC_ALL, LOCALE)
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                     level=logging.INFO,
                     filename='bot.log'
